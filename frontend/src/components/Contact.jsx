@@ -247,10 +247,10 @@ const Contact = () => {
               Or reach out directly at
             </p>
             <a
-              href="mailto:your.email@example.com"
+              href="mailto:monishputtu@gmail.com"
               className="text-base font-semibold text-primary-600 hover:underline"
             >
-              your.email@example.com
+              monishputtu@gmail.com
             </a>
           </motion.div>
         </motion.div>

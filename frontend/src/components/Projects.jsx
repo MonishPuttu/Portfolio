@@ -42,11 +42,10 @@ const Projects = () => {
     setTimeout(() => setSelectedProject(null), 300);
   };
 
-  // Separate commercial and other projects for different layouts
-  const commercialProjects = projects.filter(
-    (p) => p.category === "Commercial",
+  // Show only featured projects
+  const featuredProjects = projects.filter(
+    (p) => p.category === "Featured",
   );
-  const otherProjects = projects.filter((p) => p.category !== "Commercial");
 
   return (
     <section
@@ -54,22 +53,7 @@ const Projects = () => {
       className="py-20 lg:py-28 px-6 lg:px-8 bg-white"
     >
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="mb-14"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-            <span className="gradient-text">Featured Projects</span>
-          </h2>
-          <p className="mt-4 text-base text-gray-500 max-w-xl">
-            A collection of commercial projects showcasing innovative solutions
-            for leading brands
-          </p>
-        </motion.div>
+        <div ref={ref} />
 
         {/* Loading Skeleton */}
         {loading && (
@@ -92,7 +76,7 @@ const Projects = () => {
         {/* Projects List - stacked layout like the reference */}
         {!loading && (
           <div className="space-y-20">
-            {commercialProjects.map((project, index) => (
+            {featuredProjects.map((project, index) => (
               <ProjectCard
                 key={project.id}
                 project={project}
@@ -104,37 +88,8 @@ const Projects = () => {
           </div>
         )}
 
-        {/* Other Projects - side-by-side layout */}
-        {!loading && otherProjects.length > 0 && (
-          <div className="mt-28">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-              className="mb-14"
-            >
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-                <span className="gradient-text">Other Projects</span>
-              </h2>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-              {otherProjects.map((project, index) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  index={index}
-                  onOpenModal={handleOpenModal}
-                  layout="card"
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Empty State */}
-        {!loading && projects.length === 0 && (
+        {!loading && featuredProjects.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

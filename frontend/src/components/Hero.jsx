@@ -3,17 +3,16 @@ import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
-    <section className="relative pt-32 pb-10 md:pt-40 md:pb-16 overflow-hidden bg-white">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <section className="relative pt-32 pb-4 md:pt-40 md:pb-6 overflow-hidden bg-white">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center">
         {/* Large watermark-style heading — matches reference exactly */}
         <motion.h1
-          className="text-[3.5rem] sm:text-[5rem] md:text-[7rem] lg:text-[9rem] xl:text-[11rem] font-black tracking-tighter leading-[0.85] select-none"
+          className="text-[2.5rem] sm:text-[3.5rem] md:text-[5.5rem] lg:text-[7.5rem] xl:text-[9rem] font-black tracking-tighter leading-[0.85] select-none whitespace-nowrap"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="block text-gray-200">COMMERCIAL</span>
-          <span className="block text-gray-200">PROJECTS</span>
+          <span className="text-gray-200">FEATURED PROJECTS</span>
         </motion.h1>
       </div>
     </section>

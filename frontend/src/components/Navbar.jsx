@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -13,9 +17,13 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Detect active section
+  // Detect active section on home page
   useEffect(() => {
-    const sections = ["projects", "about"];
+    if (!isHome) {
+      setActiveSection("");
+      return;
+    }
+    const sections = ["projects"];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -31,19 +39,49 @@ const Navbar = () => {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [isHome]);
 
-  const scrollTo = (id) => {
-    document
-      .getElementById(id)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const handleNav = (id) => {
     setMobileOpen(false);
+    if (id === "achievements") {
+      navigate("/achievements");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (id === "about") {
+      navigate("/about");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (!isHome) {
+      navigate("/");
+      // Wait for the home page to render, then scroll
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleLogoClick = () => {
+    if (!isHome) {
+      navigate("/");
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const navItems = [
     { name: "Projects", id: "projects" },
+    { name: "Achievements", id: "achievements" },
     { name: "About", id: "about" },
   ];
+
+  const isActive = (id) => {
+    if (id === "achievements") return location.pathname === "/achievements";
+    if (id === "about") return location.pathname === "/about";
+    return isHome && activeSection === id;
+  };
 
   return (
     <motion.nav
@@ -63,23 +101,21 @@ const Navbar = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="cursor-pointer"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={handleLogoClick}
           >
             <h1 className="text-xl lg:text-2xl font-bold tracking-tight">
-              <span className="text-primary-600 font-display">
-                YOUR NAME
-              </span>
+              <span className="text-primary-600 font-display">MONISH PUTTU</span>
             </h1>
           </motion.div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-8">
             {navItems.map((item, i) => (
               <motion.button
                 key={item.id}
-                onClick={() => scrollTo(item.id)}
-                className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  activeSection === item.id
+                onClick={() => handleNav(item.id)}
+                className={`relative px-1 py-2 text-sm font-medium transition-colors ${
+                  isActive(item.id)
                     ? "text-primary-600"
                     : "text-gray-600 hover:text-gray-900"
                 }`}
@@ -90,10 +126,10 @@ const Navbar = () => {
                 transition={{ delay: i * 0.05 + 0.2 }}
               >
                 {item.name}
-                {activeSection === item.id && (
+                {isActive(item.id) && (
                   <motion.div
                     layoutId="activeNav"
-                    className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-[2px] bg-primary-600 rounded-full"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary-600 rounded-full"
                     transition={{ type: "spring", stiffness: 500, damping: 35 }}
                   />
                 )}
@@ -133,9 +169,9 @@ const Navbar = () => {
               {navItems.map((item, i) => (
                 <motion.button
                   key={item.id}
-                  onClick={() => scrollTo(item.id)}
+                  onClick={() => handleNav(item.id)}
                   className={`block w-full text-left py-3 px-4 rounded-xl text-sm font-medium transition-colors ${
-                    activeSection === item.id
+                    isActive(item.id)
                       ? "bg-primary-50 text-primary-600"
                       : "text-gray-700 hover:bg-gray-50"
                   }`}

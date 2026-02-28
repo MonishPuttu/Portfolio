@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
-  Youtube,
-  Twitter,
+  Github,
   Linkedin,
   FileText,
   ExternalLink,
@@ -10,27 +10,39 @@ import {
 
 const Footer = () => {
   const year = new Date().getFullYear();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   const socialLinks = [
-    { name: "Youtube", icon: Youtube, url: "https://youtube.com" },
-    { name: "Twitter", icon: Twitter, url: "https://twitter.com" },
+    { name: "GitHub", icon: Github, url: "https://github.com/MonishPuttu" },
+    { name: "LinkedIn", icon: Linkedin, url: "https://linkedin.com/in/monishputtu" },
   ];
 
   const contactLinks = [
-    { name: "Resume", icon: FileText, url: "/resume.pdf" },
-    { name: "LinkedIn", icon: Linkedin, url: "https://linkedin.com" },
-    { name: "Behance", icon: ExternalLink, url: "https://behance.net" },
+    { name: "Email", icon: ExternalLink, url: "mailto:monishputtu@gmail.com" },
   ];
 
   const pageLinks = [
-    { name: "Projects", id: "projects" },
-    { name: "About", id: "about" },
+    { name: "Projects", id: "projects", route: false },
+    { name: "Achievements", id: "achievements", route: true, path: "/achievements" },
+    { name: "About", id: "about", route: true, path: "/about" },
   ];
 
-  const scrollTo = (id) => {
-    document
-      .getElementById(id)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const handlePageNav = (link) => {
+    if (link.route) {
+      navigate(link.path);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (!isHome) {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(link.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    } else {
+      document.getElementById(link.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   return (
@@ -39,8 +51,8 @@ const Footer = () => {
       <div className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none select-none">
         <div className="animate-marquee whitespace-nowrap">
           <span className="inline-block text-[10rem] md:text-[14rem] lg:text-[18rem] font-black tracking-tighter text-primary-500/10 leading-none">
-            YOUR NAME&nbsp;&nbsp;YOUR NAME&nbsp;&nbsp;YOUR NAME&nbsp;&nbsp;YOUR
-            NAME&nbsp;&nbsp;
+            MONISH PUTTU&nbsp;&nbsp;MONISH PUTTU&nbsp;&nbsp;MONISH
+            PUTTU&nbsp;&nbsp;
           </span>
         </div>
       </div>
@@ -56,10 +68,10 @@ const Footer = () => {
             viewport={{ once: true }}
           >
             <h3 className="text-xl font-bold mb-3 font-display">
-              <span className="text-primary-400">YOUR NAME</span>
+              <span className="text-primary-400">MONISH PUTTU</span>
             </h3>
             <p className="text-sm text-gray-400 leading-relaxed max-w-[200px]">
-              Crafting exceptional digital experiences
+              Building full-stack products with modern tech
             </p>
           </motion.div>
 
@@ -136,7 +148,7 @@ const Footer = () => {
               {pageLinks.map((link) => (
                 <li key={link.name}>
                   <motion.button
-                    onClick={() => scrollTo(link.id)}
+                    onClick={() => handlePageNav(link)}
                     className="text-sm text-gray-300 hover:text-primary-400 transition-colors"
                     whileHover={{ x: 3 }}
                   >
@@ -158,7 +170,7 @@ const Footer = () => {
         >
           <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
             <p className="text-xs text-gray-500">
-              © {year} Your Name. All rights reserved.
+              © {year} Monish Puttu. All rights reserved.
             </p>
             <div className="flex items-center gap-5 text-xs text-gray-500">
               <a
