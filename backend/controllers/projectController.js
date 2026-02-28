@@ -25,7 +25,7 @@ export const getAllProjects = async (req, res) => {
     res.json({ success: true, data: allProjects });
   } catch (error) {
     console.error("Get projects error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: "Failed to fetch projects" });
   }
 };
 
@@ -37,7 +37,7 @@ export const getProjectById = async (req, res) => {
     const project = await db
       .select()
       .from(projects)
-      .where(eq(projects.id, parseInt(id)))
+      .where(eq(projects.id, id))
       .limit(1);
 
     if (project.length === 0) {
@@ -49,7 +49,7 @@ export const getProjectById = async (req, res) => {
     res.json({ success: true, data: project[0] });
   } catch (error) {
     console.error("Get project error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: "Failed to fetch project" });
   }
 };
 
@@ -65,13 +65,13 @@ export const incrementProjectViews = async (req, res) => {
         viewCount: sql`${projects.viewCount} + 1`,
         updatedAt: new Date(),
       })
-      .where(eq(projects.id, parseInt(id)));
+      .where(eq(projects.id, id));
 
     // Get updated view count
     const updated = await db
       .select({ viewCount: projects.viewCount })
       .from(projects)
-      .where(eq(projects.id, parseInt(id)))
+      .where(eq(projects.id, id))
       .limit(1);
 
     res.json({
@@ -80,7 +80,9 @@ export const incrementProjectViews = async (req, res) => {
     });
   } catch (error) {
     console.error("Increment views error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res
+      .status(500)
+      .json({ success: false, error: "Failed to increment views" });
   }
 };
 
@@ -119,7 +121,7 @@ export const createProject = async (req, res) => {
     res.status(201).json({ success: true, data: newProject[0] });
   } catch (error) {
     console.error("Create project error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: "Failed to create project" });
   }
 };
 
@@ -127,12 +129,31 @@ export const createProject = async (req, res) => {
 export const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = { ...req.body, updatedAt: new Date() };
+
+    // Whitelist allowed fields to prevent mass assignment
+    const allowedFields = [
+      "title",
+      "company",
+      "description",
+      "videoUrl",
+      "thumbnailUrl",
+      "projectUrl",
+      "color",
+      "animationCredit",
+      "category",
+      "technologies",
+    ];
+    const updateData = { updatedAt: new Date() };
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    }
 
     const updated = await db
       .update(projects)
       .set(updateData)
-      .where(eq(projects.id, parseInt(id)))
+      .where(eq(projects.id, id))
       .returning();
 
     if (updated.length === 0) {
@@ -144,7 +165,7 @@ export const updateProject = async (req, res) => {
     res.json({ success: true, data: updated[0] });
   } catch (error) {
     console.error("Update project error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: "Failed to update project" });
   }
 };
 
@@ -155,7 +176,7 @@ export const deleteProject = async (req, res) => {
 
     const deleted = await db
       .delete(projects)
-      .where(eq(projects.id, parseInt(id)))
+      .where(eq(projects.id, id))
       .returning();
 
     if (deleted.length === 0) {
@@ -167,6 +188,6 @@ export const deleteProject = async (req, res) => {
     res.json({ success: true, message: "Project deleted successfully" });
   } catch (error) {
     console.error("Delete project error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: "Failed to delete project" });
   }
 };

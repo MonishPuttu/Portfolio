@@ -5,8 +5,7 @@ import toast from "react-hot-toast";
 import ProjectCard from "./ProjectCard";
 import ProjectModal from "./ProjectModal";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import API_URL from "../config/api";
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -43,7 +42,9 @@ const Projects = () => {
   };
 
   // Show only featured projects
-  const featuredProjects = projects.filter((p) => p.category === "Featured");
+  const featuredProjects = (projects || []).filter(
+    (p) => p.category === "Featured",
+  );
 
   return (
     <section id="projects" className="py-20 lg:py-28 px-6 lg:px-8 bg-white">

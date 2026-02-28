@@ -8,23 +8,6 @@ export const submitContact = async (req, res) => {
   try {
     const { name, email, message } = req.body;
 
-    // Validate input
-    if (!name || !email || !message) {
-      return res.status(400).json({
-        success: false,
-        error: "All fields are required",
-      });
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid email address",
-      });
-    }
-
     // Get IP address
     const ipAddress = req.ip || req.connection.remoteAddress;
 
@@ -51,7 +34,6 @@ export const submitContact = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Message sent successfully! I'll get back to you soon.",
-      data: newContact[0],
     });
   } catch (error) {
     console.error("Contact submission error:", error);
@@ -85,7 +67,7 @@ export const getAllContacts = async (req, res) => {
     res.json({ success: true, data: allContacts });
   } catch (error) {
     console.error("Get contacts error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: "Failed to fetch contacts" });
   }
 };
 
@@ -97,7 +79,7 @@ export const getContactById = async (req, res) => {
     const contact = await db
       .select()
       .from(contacts)
-      .where(eq(contacts.id, parseInt(id)))
+      .where(eq(contacts.id, id))
       .limit(1);
 
     if (contact.length === 0) {
@@ -109,7 +91,7 @@ export const getContactById = async (req, res) => {
     res.json({ success: true, data: contact[0] });
   } catch (error) {
     console.error("Get contact error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: "Failed to fetch contact" });
   }
 };
 
@@ -129,7 +111,7 @@ export const updateContactStatus = async (req, res) => {
     const updated = await db
       .update(contacts)
       .set({ status })
-      .where(eq(contacts.id, parseInt(id)))
+      .where(eq(contacts.id, id))
       .returning();
 
     if (updated.length === 0) {
@@ -141,7 +123,7 @@ export const updateContactStatus = async (req, res) => {
     res.json({ success: true, data: updated[0] });
   } catch (error) {
     console.error("Update contact error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: "Failed to update contact" });
   }
 };
 
@@ -152,7 +134,7 @@ export const deleteContact = async (req, res) => {
 
     const deleted = await db
       .delete(contacts)
-      .where(eq(contacts.id, parseInt(id)))
+      .where(eq(contacts.id, id))
       .returning();
 
     if (deleted.length === 0) {
@@ -164,6 +146,6 @@ export const deleteContact = async (req, res) => {
     res.json({ success: true, message: "Contact deleted successfully" });
   } catch (error) {
     console.error("Delete contact error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: "Failed to delete contact" });
   }
 };

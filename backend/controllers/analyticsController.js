@@ -40,7 +40,9 @@ export const trackPageView = async (req, res) => {
     res.json({ success: true, session_id });
   } catch (error) {
     console.error("Track page view error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res
+      .status(500)
+      .json({ success: false, error: "Failed to track page view" });
   }
 };
 
@@ -69,7 +71,7 @@ export const trackEvent = async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     console.error("Track event error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: "Failed to track event" });
   }
 };
 
@@ -131,7 +133,9 @@ export const getAnalyticsStats = async (req, res) => {
     });
   } catch (error) {
     console.error("Get analytics stats error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res
+      .status(500)
+      .json({ success: false, error: "Failed to fetch analytics" });
   }
 };
 
@@ -155,7 +159,9 @@ export const getPageViewsOverTime = async (req, res) => {
     res.json({ success: true, data: viewsOverTime });
   } catch (error) {
     console.error("Get page views over time error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res
+      .status(500)
+      .json({ success: false, error: "Failed to fetch page views" });
   }
 };
 
@@ -178,6 +184,8 @@ export const getPopularProjects = async (req, res) => {
     res.json({ success: true, data: popularProjects });
   } catch (error) {
     console.error("Get popular projects error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    res
+      .status(500)
+      .json({ success: false, error: "Failed to fetch popular projects" });
   }
 };

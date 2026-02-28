@@ -12,11 +12,13 @@ import projectRoutes from "./routes/projects.js";
 import achievementRoutes from "./routes/achievements.js";
 import contactRoutes from "./routes/contact.js";
 import analyticsRoutes from "./routes/analytics.js";
+import authRoutes from "./routes/auth.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const isProduction = process.env.NODE_ENV === "production";
 
 // Middleware
 app.use(
@@ -25,16 +27,29 @@ app.use(
   }),
 );
 
+// CORS — require FRONTEND_URL in production
+const corsOrigin = process.env.FRONTEND_URL;
+if (isProduction && !corsOrigin) {
+  console.error(
+    "⚠️  FRONTEND_URL is not set. CORS will reject all cross-origin requests in production.",
+  );
+}
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: corsOrigin || "http://localhost:5173",
     credentials: true,
   }),
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev"));
+// Limit request body size
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
+
+// Only log in development
+if (!isProduction) {
+  app.use(morgan("dev"));
+}
 
 // Rate limiting
 app.use("/api/", apiLimiter);
@@ -43,19 +58,22 @@ app.use("/api/", apiLimiter);
 app.use("/uploads", express.static("uploads"));
 
 // API Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/achievements", achievementRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
-// Health check
+// Health check (minimal info in production)
 app.get("/health", async (req, res) => {
+  if (isProduction) {
+    return res.json({ status: "OK" });
+  }
   const dbConnected = await testConnection();
   res.json({
     status: "OK",
     timestamp: new Date().toISOString(),
     database: dbConnected ? "connected" : "disconnected",
-    environment: process.env.NODE_ENV || "development",
   });
 });
 
@@ -64,13 +82,6 @@ app.get("/", (req, res) => {
   res.json({
     message: "Portfolio API Server",
     version: "1.0.0",
-    endpoints: {
-      projects: "/api/projects",
-      achievements: "/api/achievements",
-      contact: "/api/contact",
-      analytics: "/api/analytics",
-      health: "/health",
-    },
   });
 });
 
@@ -100,14 +111,6 @@ const startServer = async () => {
       console.log(
         `📧 Email: ${process.env.EMAIL_USER ? "✅ Configured" : "⚠️  Not configured"}`,
       );
-      console.log("\n📚 Available endpoints:");
-      console.log(`   GET  /health`);
-      console.log(`   GET  /api/projects`);
-      console.log(`   POST /api/projects`);
-      console.log(`   GET  /api/achievements`);
-      console.log(`   POST /api/contact`);
-      console.log(`   POST /api/analytics/page-view`);
-      console.log(`   GET  /api/analytics/stats`);
       console.log("\n");
     });
   } catch (error) {

@@ -10,8 +10,7 @@ import {
   Loader as LoaderIcon,
 } from "lucide-react";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import API_URL from "../config/api";
 
 const Contact = () => {
   const [ref, isInView] = useIntersectionObserver({ threshold: 0.05 });
@@ -61,9 +60,7 @@ const Contact = () => {
       if (error.response?.status === 429) {
         toast.error("Too many messages. Try again in 15 minutes.");
       } else {
-        toast.error(
-          error.response?.data?.error || "Failed to send. Please try again.",
-        );
+        toast.error("Failed to send. Please try again.");
       }
     } finally {
       setLoading(false);

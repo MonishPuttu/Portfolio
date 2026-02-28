@@ -142,7 +142,7 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                     src={project.project_url}
                     title={`${project.title} preview`}
                     className="w-full h-full border-0"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                    sandbox="allow-scripts allow-popups allow-forms"
                     loading="lazy"
                     onLoad={() => setIframeLoading(false)}
                   />
