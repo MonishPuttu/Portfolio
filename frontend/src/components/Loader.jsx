@@ -3,14 +3,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const Loader = () => {
   const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2500);
+    const interval = setInterval(() => {
+      setProgress((p) => {
+        if (p >= 100) { clearInterval(interval); return 100; }
+        return p + Math.random() * 15 + 5;
+      });
+    }, 200);
 
-    return () => clearTimeout(timer);
+    const timer = setTimeout(() => setLoading(false), 2500);
+    return () => { clearTimeout(timer); clearInterval(interval); };
   }, []);
 
   return (
@@ -19,85 +23,52 @@ const Loader = () => {
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-light-bg dark:bg-dark-bg"
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white dark:bg-[#0a0a0a]"
         >
+          {/* Three animated bars - matching screenshot */}
           <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
+            initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{
-              duration: 0.5,
-              ease: 'easeOut',
-            }}
-            className="relative"
+            transition={{ duration: 0.4 }}
+            className="mb-10"
           >
-            {/* Animated Logo/Icon */}
-            <motion.div
-              animate={{
-                rotate: [0, 360],
-                scale: [1, 1.1, 1],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-              className="w-20 h-20 relative"
-            >
-              {/* Three vertical bars animation (like in the screenshot) */}
-              <div className="flex items-center justify-center gap-2 h-full">
+            <div className="flex items-end justify-center gap-[6px] h-16">
+              {[0, 0.15, 0.3].map((delay, i) => (
                 <motion.div
+                  key={i}
                   animate={{
-                    scaleY: [1, 1.5, 1],
-                    opacity: [0.5, 1, 0.5],
+                    height: ['24px', '48px', '24px'],
+                    opacity: [0.4, 1, 0.4],
                   }}
                   transition={{
-                    duration: 1,
+                    duration: 0.8,
                     repeat: Infinity,
                     ease: 'easeInOut',
-                    delay: 0,
+                    delay,
                   }}
-                  className="w-3 h-12 bg-primary-500 rounded-full"
+                  className="w-[10px] rounded-full bg-gradient-to-t from-primary-700 to-primary-400"
                 />
-                <motion.div
-                  animate={{
-                    scaleY: [1, 1.5, 1],
-                    opacity: [0.5, 1, 0.5],
-                  }}
-                  transition={{
-                    duration: 1,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                    delay: 0.2,
-                  }}
-                  className="w-3 h-12 bg-primary-500 rounded-full"
-                />
-                <motion.div
-                  animate={{
-                    scaleY: [1, 1.5, 1],
-                    opacity: [0.5, 1, 0.5],
-                  }}
-                  transition={{
-                    duration: 1,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                    delay: 0.4,
-                  }}
-                  className="w-3 h-12 bg-primary-500 rounded-full"
-                />
-              </div>
-            </motion.div>
-
-            {/* Optional: Loading text */}
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-center mt-8 text-sm font-medium text-gray-600 dark:text-gray-400"
-            >
-              Loading...
-            </motion.p>
+              ))}
+            </div>
           </motion.div>
+
+          {/* Progress bar */}
+          <div className="w-48 h-[2px] bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-primary-500 rounded-full"
+              style={{ width: `${Math.min(progress, 100)}%` }}
+            />
+          </div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="mt-6 text-[11px] font-medium tracking-[0.2em] uppercase text-gray-400 dark:text-gray-600"
+          >
+            Loading
+          </motion.p>
         </motion.div>
       )}
     </AnimatePresence>

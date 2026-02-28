@@ -13,7 +13,7 @@ const Projects = () => {
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [ref, isInView] = useIntersectionObserver({ threshold: 0.1 });
+  const [ref, isInView] = useIntersectionObserver({ threshold: 0.05 });
 
   useEffect(() => {
     fetchProjects();
@@ -26,6 +26,7 @@ const Projects = () => {
     } catch (error) {
       console.error('Error fetching projects:', error);
       toast.error('Failed to load projects');
+      // Fallback: use empty array, no crash
     } finally {
       setLoading(false);
     }
@@ -41,70 +42,110 @@ const Projects = () => {
     setTimeout(() => setSelectedProject(null), 300);
   };
 
+  // Separate commercial and other projects for different layouts
+  const commercialProjects = projects.filter((p) => p.category === 'Commercial');
+  const otherProjects = projects.filter((p) => p.category !== 'Commercial');
+
   return (
-    <section id="projects" className="py-24 px-6 lg:px-8 bg-light-bg dark:bg-dark-bg">
+    <section id="projects" className="py-20 lg:py-28 px-6 lg:px-8 bg-white dark:bg-[#0a0a0a]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-16"
+          transition={{ duration: 0.5 }}
+          className="mb-14"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
-              Featured Projects
-            </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+            <span className="gradient-text">Featured Projects</span>
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
+          <p className="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-xl">
             A collection of commercial projects showcasing innovative solutions for leading brands
           </p>
         </motion.div>
 
-        {/* Loading State */}
+        {/* Loading Skeleton */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="space-y-16">
+            {[1, 2, 3].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-video bg-gray-200 dark:bg-gray-800 rounded-2xl mb-4" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/4 mb-2" />
-                <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-3/4" />
+                <div className="aspect-[16/9] bg-gray-100 dark:bg-gray-800/50 rounded-2xl mb-6" />
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="h-3 bg-gray-100 dark:bg-gray-800/50 rounded w-20 mb-3" />
+                    <div className="h-5 bg-gray-100 dark:bg-gray-800/50 rounded w-64" />
+                  </div>
+                  <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800/50 rounded-full" />
+                </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Projects Grid */}
+        {/* Projects List - stacked layout like the reference */}
         {!loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            {projects.map((project, index) => (
+          <div className="space-y-20">
+            {commercialProjects.map((project, index) => (
               <ProjectCard
                 key={project.id}
                 project={project}
                 index={index}
                 onOpenModal={handleOpenModal}
+                layout="stacked"
               />
             ))}
           </div>
         )}
 
+        {/* Other Projects - side-by-side layout */}
+        {!loading && otherProjects.length > 0 && (
+          <div className="mt-28">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="mb-14"
+            >
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+                <span className="gradient-text">Other Projects</span>
+              </h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+              {otherProjects.map((project, index) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  index={index}
+                  onOpenModal={handleOpenModal}
+                  layout="card"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Empty State */}
         {!loading && projects.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-gray-500 dark:text-gray-400 text-lg">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-24"
+          >
+            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+              <span className="text-2xl">📁</span>
+            </div>
+            <p className="text-gray-400 dark:text-gray-500 text-base">
               No projects found. Check back soon!
             </p>
-          </div>
+          </motion.div>
         )}
       </div>
 
-      {/* Project Modal */}
-      <ProjectModal
-        project={selectedProject}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
+      {/* Modal */}
+      <ProjectModal project={selectedProject} isOpen={isModalOpen} onClose={handleCloseModal} />
     </section>
   );
 };

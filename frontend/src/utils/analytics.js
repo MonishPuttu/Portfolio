@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-// Generate or retrieve visitor ID
 export const getVisitorId = () => {
   let visitorId = localStorage.getItem('visitor_id');
   if (!visitorId) {
@@ -12,7 +11,6 @@ export const getVisitorId = () => {
   return visitorId;
 };
 
-// Track page view
 export const trackPageView = async (pageUrl) => {
   try {
     const visitorId = getVisitorId();
@@ -21,11 +19,10 @@ export const trackPageView = async (pageUrl) => {
       visitor_id: visitorId,
     });
   } catch (error) {
-    console.error('Analytics tracking error:', error);
+    // Silently fail - don't disrupt UX
   }
 };
 
-// Track custom event
 export const trackEvent = async (eventType, eventData = {}) => {
   try {
     await axios.post(`${API_URL}/analytics/event`, {
@@ -33,28 +30,22 @@ export const trackEvent = async (eventType, eventData = {}) => {
       event_data: eventData,
     });
   } catch (error) {
-    console.error('Event tracking error:', error);
+    // Silently fail
   }
 };
 
-// Track project view
 export const trackProjectView = async (projectId) => {
   try {
     await axios.post(`${API_URL}/projects/${projectId}/view`);
   } catch (error) {
-    console.error('Project view tracking error:', error);
+    // Silently fail
   }
 };
 
-// Hook for analytics
 export const useAnalytics = () => {
   const trackPage = (pageUrl) => trackPageView(pageUrl);
   const trackCustomEvent = (eventType, data) => trackEvent(eventType, data);
   const trackProject = (projectId) => trackProjectView(projectId);
 
-  return {
-    trackPage,
-    trackCustomEvent,
-    trackProject,
-  };
+  return { trackPage, trackCustomEvent, trackProject };
 };

@@ -8,260 +8,161 @@ import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const Contact = () => {
-  const [ref, isInView] = useIntersectionObserver({ threshold: 0.1 });
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
+  const [ref, isInView] = useIntersectionObserver({ threshold: 0.05 });
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [sent, setSent] = useState(false);
 
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
-    } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const validate = () => {
+    const errs = {};
+    if (!formData.name.trim()) errs.name = 'Name is required';
+    if (!formData.email.trim()) errs.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errs.email = 'Invalid email';
+    if (!formData.message.trim()) errs.message = 'Message is required';
+    else if (formData.message.trim().length < 10) errs.message = 'At least 10 characters';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    
-    // Clear error for this field
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: '',
-      }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      toast.error('Please fix the errors in the form');
-      return;
-    }
-
+    if (!validate()) return;
     setLoading(true);
-
     try {
-      const response = await axios.post(`${API_URL}/contact`, formData);
-      
-      if (response.data.success) {
-        toast.success('Message sent successfully! I\'ll get back to you soon.', {
-          duration: 5000,
-          icon: '✉️',
-        });
-        
-        // Reset form
-        setFormData({
-          name: '',
-          email: '',
-          message: '',
-        });
+      const res = await axios.post(`${API_URL}/contact`, formData);
+      if (res.data.success) {
+        toast.success("Message sent! I'll get back to you soon.", { duration: 5000, icon: '✉️' });
+        setFormData({ name: '', email: '', message: '' });
+        setSent(true);
       }
     } catch (error) {
-      console.error('Contact form error:', error);
-      
       if (error.response?.status === 429) {
-        toast.error('Too many messages sent. Please try again in 15 minutes.');
+        toast.error('Too many messages. Try again in 15 minutes.');
       } else {
-        toast.error(error.response?.data?.error || 'Failed to send message. Please try again.');
+        toast.error(error.response?.data?.error || 'Failed to send. Please try again.');
       }
     } finally {
       setLoading(false);
     }
   };
 
+  const inputClass = (field) =>
+    `w-full px-4 py-3.5 rounded-xl bg-gray-50 dark:bg-gray-800/50 border ${
+      errors[field]
+        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/10'
+        : 'border-gray-200 dark:border-gray-700 focus:border-primary-500 focus:ring-primary-500/10'
+    } focus:outline-none focus:ring-4 transition-all text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500`;
+
   return (
-    <section id="contact" className="py-24 px-6 lg:px-8 bg-gray-50 dark:bg-gray-900/50">
+    <section id="contact" className="py-20 lg:py-28 px-6 lg:px-8 bg-gray-50/50 dark:bg-[#0d0d0d]">
       <Toaster position="top-center" />
-      
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
         >
-          {/* Section Header */}
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
-                Get In Touch
-              </span>
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+              <span className="gradient-text">Get In Touch</span>
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
               Have a project in mind or just want to chat? I'd love to hear from you!
             </p>
           </div>
 
-          {/* Contact Form */}
+          {/* Form */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white dark:bg-dark-card rounded-2xl p-8 md:p-12 shadow-xl border border-gray-200 dark:border-gray-800"
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="bg-white dark:bg-dark-card rounded-2xl p-6 md:p-10 shadow-sm border border-gray-100 dark:border-gray-800"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name Field */}
-              <div>
-                <label
-                  htmlFor="name"
-                  className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  <User className="w-4 h-4" />
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-900 border ${
-                    errors.name
-                      ? 'border-red-500 focus:border-red-500'
-                      : 'border-gray-300 dark:border-gray-700 focus:border-primary-500'
-                  } focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-gray-900 dark:text-white`}
-                  placeholder="John Doe"
-                />
-                {errors.name && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-500 text-sm mt-1"
-                  >
-                    {errors.name}
-                  </motion.p>
-                )}
-              </div>
-
-              {/* Email Field */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  <Mail className="w-4 h-4" />
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-900 border ${
-                    errors.email
-                      ? 'border-red-500 focus:border-red-500'
-                      : 'border-gray-300 dark:border-gray-700 focus:border-primary-500'
-                  } focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-gray-900 dark:text-white`}
-                  placeholder="john@example.com"
-                />
-                {errors.email && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-500 text-sm mt-1"
-                  >
-                    {errors.email}
-                  </motion.p>
-                )}
-              </div>
-
-              {/* Message Field */}
-              <div>
-                <label
-                  htmlFor="message"
-                  className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  Your Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows="6"
-                  className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-900 border ${
-                    errors.message
-                      ? 'border-red-500 focus:border-red-500'
-                      : 'border-gray-300 dark:border-gray-700 focus:border-primary-500'
-                  } focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-gray-900 dark:text-white resize-none`}
-                  placeholder="Tell me about your project..."
-                />
-                {errors.message && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-500 text-sm mt-1"
-                  >
-                    {errors.message}
-                  </motion.p>
-                )}
-              </div>
-
-              {/* Submit Button */}
-              <motion.button
-                type="submit"
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 text-white rounded-full font-semibold text-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
-                whileHover={!loading ? { scale: 1.02 } : {}}
-                whileTap={!loading ? { scale: 0.98 } : {}}
+            {sent ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-10"
               >
-                {loading ? (
-                  <>
-                    <LoaderIcon className="w-5 h-5 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    Send Message
-                  </>
-                )}
-              </motion.button>
-            </form>
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center">
+                  <span className="text-2xl">✉️</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Message Sent!</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Thank you for reaching out. I'll respond shortly.</p>
+                <button
+                  onClick={() => setSent(false)}
+                  className="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline"
+                >
+                  Send another message
+                </button>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label htmlFor="name" className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">
+                    <User className="w-3.5 h-3.5" /> Name
+                  </label>
+                  <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className={inputClass('name')} placeholder="Your name" />
+                  {errors.name && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-xs mt-1">{errors.name}</motion.p>}
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">
+                    <Mail className="w-3.5 h-3.5" /> Email
+                  </label>
+                  <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className={inputClass('email')} placeholder="you@example.com" />
+                  {errors.email && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-xs mt-1">{errors.email}</motion.p>}
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">
+                    <MessageSquare className="w-3.5 h-3.5" /> Message
+                  </label>
+                  <textarea id="message" name="message" rows="5" value={formData.message} onChange={handleChange} className={`${inputClass('message')} resize-none`} placeholder="Tell me about your project..." />
+                  {errors.message && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-xs mt-1">{errors.message}</motion.p>}
+                </div>
+
+                <motion.button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-primary-600 text-white rounded-xl font-semibold text-sm hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-primary-500/15 hover:shadow-xl hover:shadow-primary-500/20"
+                  whileHover={!loading ? { scale: 1.01 } : {}}
+                  whileTap={!loading ? { scale: 0.99 } : {}}
+                >
+                  {loading ? (
+                    <>
+                      <LoaderIcon className="w-4 h-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      Send Message
+                    </>
+                  )}
+                </motion.button>
+              </form>
+            )}
           </motion.div>
 
-          {/* Contact Info */}
+          {/* Direct email */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-12 text-center"
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mt-8 text-center"
           >
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Or reach out directly at
-            </p>
-            <a
-              href="mailto:your.email@example.com"
-              className="text-xl font-semibold text-primary-600 dark:text-primary-500 hover:underline"
-            >
+            <p className="text-sm text-gray-400 mb-2">Or reach out directly at</p>
+            <a href="mailto:your.email@example.com" className="text-base font-semibold text-primary-600 dark:text-primary-400 hover:underline">
               your.email@example.com
             </a>
           </motion.div>

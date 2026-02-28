@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
 import { trackPageView } from './utils/analytics';
 
-// Components
 import Loader from './components/Loader';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -16,41 +15,28 @@ import Footer from './components/Footer';
 
 function App() {
   useEffect(() => {
-    // Track initial page view
     trackPageView(window.location.pathname);
 
-    // Track page views on route change
-    const handleRouteChange = () => {
-      trackPageView(window.location.pathname);
-    };
-
+    const handleRouteChange = () => trackPageView(window.location.pathname);
     window.addEventListener('popstate', handleRouteChange);
-
-    return () => {
-      window.removeEventListener('popstate', handleRouteChange);
-    };
+    return () => window.removeEventListener('popstate', handleRouteChange);
   }, []);
 
   return (
     <ThemeProvider>
       <Router>
-        <div className="min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
-          {/* Full Page Loader */}
+        <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 transition-colors duration-300">
           <Loader />
 
-          {/* Page Wrapper with Transition */}
           <AnimatePresence mode="wait">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.4 }}
               className="page-transition"
             >
-              {/* Navigation */}
               <Navbar />
-
-              {/* Main Content */}
               <main>
                 <Hero />
                 <Projects />
@@ -58,8 +44,6 @@ function App() {
                 <About />
                 <Contact />
               </main>
-
-              {/* Footer */}
               <Footer />
             </motion.div>
           </AnimatePresence>

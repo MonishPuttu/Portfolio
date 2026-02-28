@@ -16,19 +16,12 @@ export const useIntersectionObserver = (options = {}) => {
           setHasAnimated(true);
         }
       },
-      {
-        threshold: 0.1,
-        rootMargin: '0px',
-        ...options,
-      }
+      { threshold: 0.1, rootMargin: '0px', ...options }
     );
 
     observer.observe(element);
-
     return () => {
-      if (element) {
-        observer.unobserve(element);
-      }
+      if (element) observer.unobserve(element);
     };
   }, [options, hasAnimated]);
 

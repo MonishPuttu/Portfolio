@@ -19,111 +19,98 @@ const iconMap = {
 const Achievements = () => {
   const [achievements, setAchievements] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [ref, isInView] = useIntersectionObserver({ threshold: 0.1 });
+  const [ref, isInView] = useIntersectionObserver({ threshold: 0.05 });
 
   useEffect(() => {
+    const fetchAchievements = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/achievements`);
+        setAchievements(res.data.data);
+      } catch (error) {
+        console.error('Error fetching achievements:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchAchievements();
   }, []);
 
-  const fetchAchievements = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/achievements`);
-      setAchievements(response.data.data);
-    } catch (error) {
-      console.error('Error fetching achievements:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    return new Date(dateString).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   };
 
   return (
-    <section id="achievements" className="py-24 px-6 lg:px-8 bg-gray-50 dark:bg-gray-900/50">
+    <section id="achievements" className="py-20 lg:py-28 px-6 lg:px-8 bg-gray-50/50 dark:bg-[#0d0d0d]">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
+        {/* Header */}
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
+          transition={{ duration: 0.5 }}
+          className="mb-14 text-center"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
-              Achievements
-            </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+            <span className="gradient-text">Achievements</span>
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-lg mx-auto">
             Milestones and recognitions throughout my journey
           </p>
         </motion.div>
 
-        {/* Loading State */}
+        {/* Loading */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse">
-                <div className="h-48 bg-gray-200 dark:bg-gray-800 rounded-xl" />
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="animate-pulse h-48 bg-gray-100 dark:bg-gray-800/30 rounded-2xl" />
             ))}
           </div>
         )}
 
-        {/* Achievements Grid */}
+        {/* Grid */}
         {!loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {achievements.map((achievement, index) => {
               const Icon = iconMap[achievement.icon] || Award;
-              
               return (
                 <motion.div
                   key={achievement.id}
-                  initial={{ opacity: 0, y: 50 }}
+                  initial={{ opacity: 0, y: 30 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ y: -10, scale: 1.02 }}
-                  className="relative group"
+                  transition={{ duration: 0.5, delay: index * 0.06 }}
+                  whileHover={{ y: -4 }}
+                  className="group"
                 >
-                  <div className="h-full p-6 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 hover:border-primary-500 dark:hover:border-primary-500 transition-all shadow-lg hover:shadow-xl">
+                  <div className="h-full p-6 rounded-2xl bg-white dark:bg-dark-card border border-gray-100 dark:border-gray-800 hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-300 card-hover">
                     {/* Icon */}
-                    <div className="mb-4">
-                      <div className="w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Icon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                    <div className="mb-4 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <Icon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                       </div>
-                    </div>
-
-                    {/* Content */}
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 leading-tight">
-                      {achievement.title}
-                    </h3>
-                    
-                    {achievement.description && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 leading-relaxed">
-                        {achievement.description}
-                      </p>
-                    )}
-
-                    {/* Date & Category */}
-                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
-                      {achievement.date && (
-                        <span className="px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800">
-                          {formatDate(achievement.date)}
-                        </span>
-                      )}
                       {achievement.category && (
-                        <span className="px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400">
+                        <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400">
                           {achievement.category}
                         </span>
                       )}
                     </div>
 
-                    {/* Hover gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-primary-600/0 group-hover:from-primary-500/5 group-hover:to-primary-600/5 rounded-xl transition-all pointer-events-none" />
+                    {/* Content */}
+                    <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2 leading-snug">
+                      {achievement.title}
+                    </h3>
+                    {achievement.description && (
+                      <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-3">
+                        {achievement.description}
+                      </p>
+                    )}
+
+                    {/* Date */}
+                    {achievement.date && (
+                      <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
+                        {formatDate(achievement.date)}
+                      </p>
+                    )}
                   </div>
                 </motion.div>
               );
@@ -131,12 +118,10 @@ const Achievements = () => {
           </div>
         )}
 
-        {/* Empty State */}
+        {/* Empty */}
         {!loading && achievements.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-500 dark:text-gray-400 text-lg">
-              No achievements yet. Stay tuned!
-            </p>
+            <p className="text-gray-400 text-base">No achievements yet. Stay tuned!</p>
           </div>
         )}
       </div>
