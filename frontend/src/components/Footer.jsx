@@ -19,7 +19,11 @@ const Footer = () => {
   ];
 
   const contactLinks = [
-    { name: "Email", icon: ExternalLink, url: "mailto:monishputtu1780@gmail.com" },
+    {
+      name: "Email",
+      icon: ExternalLink,
+      url: "mailto:monishputtu1780@gmail.com",
+    },
   ];
 
   const pageLinks = [
