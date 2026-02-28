@@ -14,12 +14,12 @@ const Footer = () => {
     {
       name: "LinkedIn",
       icon: Linkedin,
-      url: "https://linkedin.com/in/monishputtu",
+      url: "https://www.linkedin.com/in/monish-k-543236251/",
     },
   ];
 
   const contactLinks = [
-    { name: "Email", icon: ExternalLink, url: "mailto:monishputtu@gmail.com" },
+    { name: "Email", icon: ExternalLink, url: "mailto:monishputtu1780@gmail.com" },
   ];
 
   const pageLinks = [

@@ -197,7 +197,7 @@ const Contact = () => {
                     value={formData.message}
                     onChange={handleChange}
                     className={`${inputClass("message")} resize-none`}
-                    placeholder="Tell me about your project..."
+                    placeholder="Reason for contact"
                   />
                   {errors.message && (
                     <motion.p
@@ -244,10 +244,10 @@ const Contact = () => {
               Or reach out directly at
             </p>
             <a
-              href="mailto:monishputtu@gmail.com"
+              href="mailto:monishputtu1780@gmail.com"
               className="text-base font-semibold text-primary-600 hover:underline"
             >
-              monishputtu@gmail.com
+              monishputtu1780@gmail.com
             </a>
           </motion.div>
         </motion.div>

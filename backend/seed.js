@@ -25,27 +25,6 @@ const seedProjects = [
     ],
   },
   {
-    title: "DRAWIFY — Real-Time Collaborative Drawing",
-    company: "DRAWIFY",
-    description:
-      "A real-time collaborative drawing application where users can create or join rooms and communicate visually using drawings, shapes, and sketches — all synchronized live across participants. Deployed on AWS EC2 with Docker.",
-    videoUrl: "/videos/drawify.mp4",
-    thumbnailUrl: null,
-    projectUrl: "https://github.com/MonishPuttu/DRAWIFY",
-    color: "#3B82F6",
-    animationCredit: null,
-    category: "Featured",
-    technologies: [
-      "React",
-      "TypeScript",
-      "Node.js",
-      "WebSockets",
-      "Turborepo",
-      "Docker",
-      "AWS EC2",
-    ],
-  },
-  {
     title: "Renz — Interactive Full-Stack Playground",
     company: "Renz",
     description:
@@ -58,20 +37,20 @@ const seedProjects = [
     category: "Featured",
     technologies: ["Next.js", "TypeScript", "Node.js", "Express", "Vercel"],
   },
-  // ── Other Projects (hidden by default) ─────────────────
   {
     title: "InternHub — Internship Management Platform",
     company: "InternHub",
     description:
       "A platform for managing internship applications, tracking progress, and connecting students with opportunities.",
-    videoUrl: null,
+    videoUrl: "/videos/internhub.mp4",
     thumbnailUrl: null,
     projectUrl: "https://github.com/MonishPuttu/InternHub",
     color: "#F59E0B",
     animationCredit: null,
-    category: "Other",
+    category: "Featured",
     technologies: ["JavaScript", "Node.js", "Express"],
   },
+  // ── Other Projects (hidden by default) ─────────────────
   {
     title: "TrackTots — Child Attendance Tracker",
     company: "TrackTots",
@@ -121,6 +100,12 @@ const seedAchievements = [
 async function seed() {
   try {
     console.log("🌱 Starting database seeding...");
+
+    // Clean up existing data
+    console.log("🧹 Clearing existing data...");
+    await db.delete(achievements);
+    await db.delete(projects);
+    console.log("✅ Existing data cleared");
 
     // Insert projects
     console.log("📦 Inserting projects...");
