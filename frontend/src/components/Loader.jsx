@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Loader = () => {
   const [loading, setLoading] = useState(true);
@@ -8,13 +8,19 @@ const Loader = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((p) => {
-        if (p >= 100) { clearInterval(interval); return 100; }
+        if (p >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
         return p + Math.random() * 15 + 5;
       });
     }, 200);
 
     const timer = setTimeout(() => setLoading(false), 2500);
-    return () => { clearTimeout(timer); clearInterval(interval); };
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, []);
 
   return (
@@ -38,13 +44,13 @@ const Loader = () => {
                 <motion.div
                   key={i}
                   animate={{
-                    height: ['24px', '48px', '24px'],
+                    height: ["24px", "48px", "24px"],
                     opacity: [0.4, 1, 0.4],
                   }}
                   transition={{
                     duration: 0.8,
                     repeat: Infinity,
-                    ease: 'easeInOut',
+                    ease: "easeInOut",
                     delay,
                   }}
                   className="w-[10px] rounded-full bg-gradient-to-t from-primary-700 to-primary-400"

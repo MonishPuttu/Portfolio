@@ -44,7 +44,7 @@ export default {
         "scale-in": "scaleIn 0.4s ease-out forwards",
         "spin-slow": "spin 3s linear infinite",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "marquee": "marquee 30s linear infinite",
+        marquee: "marquee 30s linear infinite",
       },
       keyframes: {
         fadeIn: {

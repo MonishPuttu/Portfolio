@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import ProjectCard from './ProjectCard';
-import ProjectModal from './ProjectModal';
-import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import axios from "axios";
+import toast from "react-hot-toast";
+import ProjectCard from "./ProjectCard";
+import ProjectModal from "./ProjectModal";
+import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -24,8 +24,8 @@ const Projects = () => {
       const response = await axios.get(`${API_URL}/projects`);
       setProjects(response.data.data);
     } catch (error) {
-      console.error('Error fetching projects:', error);
-      toast.error('Failed to load projects');
+      console.error("Error fetching projects:", error);
+      toast.error("Failed to load projects");
       // Fallback: use empty array, no crash
     } finally {
       setLoading(false);
@@ -43,11 +43,16 @@ const Projects = () => {
   };
 
   // Separate commercial and other projects for different layouts
-  const commercialProjects = projects.filter((p) => p.category === 'Commercial');
-  const otherProjects = projects.filter((p) => p.category !== 'Commercial');
+  const commercialProjects = projects.filter(
+    (p) => p.category === "Commercial",
+  );
+  const otherProjects = projects.filter((p) => p.category !== "Commercial");
 
   return (
-    <section id="projects" className="py-20 lg:py-28 px-6 lg:px-8 bg-white dark:bg-[#0a0a0a]">
+    <section
+      id="projects"
+      className="py-20 lg:py-28 px-6 lg:px-8 bg-white dark:bg-[#0a0a0a]"
+    >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div
@@ -61,7 +66,8 @@ const Projects = () => {
             <span className="gradient-text">Featured Projects</span>
           </h2>
           <p className="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-xl">
-            A collection of commercial projects showcasing innovative solutions for leading brands
+            A collection of commercial projects showcasing innovative solutions
+            for leading brands
           </p>
         </motion.div>
 
@@ -145,7 +151,11 @@ const Projects = () => {
       </div>
 
       {/* Modal */}
-      <ProjectModal project={selectedProject} isOpen={isModalOpen} onClose={handleCloseModal} />
+      <ProjectModal
+        project={selectedProject}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </section>
   );
 };

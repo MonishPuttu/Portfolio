@@ -1,12 +1,12 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const getVisitorId = () => {
-  let visitorId = localStorage.getItem('visitor_id');
+  let visitorId = localStorage.getItem("visitor_id");
   if (!visitorId) {
     visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    localStorage.setItem('visitor_id', visitorId);
+    localStorage.setItem("visitor_id", visitorId);
   }
   return visitorId;
 };

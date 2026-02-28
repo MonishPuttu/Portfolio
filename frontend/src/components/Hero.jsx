@@ -1,10 +1,10 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowDown } from 'lucide-react';
+import React from "react";
+import { motion } from "framer-motion";
+import { ArrowDown } from "lucide-react";
 
 const Hero = () => {
   const scrollToProjects = () => {
-    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -16,12 +16,12 @@ const Hero = () => {
       <motion.div
         className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary-500/[0.04] dark:bg-primary-500/[0.06] rounded-full blur-[100px]"
         animate={{ scale: [1, 1.15, 1], x: [0, 30, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
         className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-primary-600/[0.03] dark:bg-primary-600/[0.05] rounded-full blur-[100px]"
         animate={{ scale: [1, 1.2, 1], y: [0, -20, 0] }}
-        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
       />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10">
@@ -51,7 +51,8 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
           >
-            Creating exceptional digital experiences for leading brands worldwide
+            Creating exceptional digital experiences for leading brands
+            worldwide
           </motion.p>
 
           {/* CTA */}
@@ -65,7 +66,10 @@ const Hero = () => {
             whileTap={{ scale: 0.97 }}
           >
             View Projects
-            <motion.span animate={{ y: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
+            <motion.span
+              animate={{ y: [0, 4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
               <ArrowDown className="w-4 h-4" />
             </motion.span>
           </motion.button>

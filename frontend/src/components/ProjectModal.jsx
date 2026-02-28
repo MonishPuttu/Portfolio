@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, Eye, ArrowLeft, Loader as LoaderIcon } from 'lucide-react';
-import { useAnalytics } from '../utils/analytics';
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  ExternalLink,
+  Eye,
+  ArrowLeft,
+  Loader as LoaderIcon,
+} from "lucide-react";
+import { useAnalytics } from "../utils/analytics";
 
 const ProjectModal = ({ project, isOpen, onClose }) => {
   const { trackProject } = useAnalytics();
@@ -11,22 +17,26 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen && project) {
       trackProject(project.id);
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
       // Small delay for smooth modal entrance before loading iframe
       const t = setTimeout(() => setShowIframe(true), 400);
       return () => clearTimeout(t);
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
       setShowIframe(false);
       setIframeLoading(true);
     }
-    return () => { document.body.style.overflow = 'unset'; };
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [isOpen, project, trackProject]);
 
   useEffect(() => {
-    const handleEscape = (e) => { if (e.key === 'Escape') onClose(); };
-    if (isOpen) window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
+    const handleEscape = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose]);
 
   if (!project) return null;
@@ -71,7 +81,9 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                   <h2 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                     {project.title}
                   </h2>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{project.company}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {project.company}
+                  </p>
                 </div>
               </div>
 
@@ -80,7 +92,9 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                 {project.view_count > 0 && (
                   <div className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-800">
                     <Eye className="w-3.5 h-3.5 text-gray-500" />
-                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{project.view_count}</span>
+                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                      {project.view_count}
+                    </span>
                   </div>
                 )}
 
@@ -119,7 +133,9 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                   {iframeLoading && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-gray-900 z-10">
                       <LoaderIcon className="w-6 h-6 text-primary-500 animate-spin mb-3" />
-                      <p className="text-xs text-gray-400">Loading website...</p>
+                      <p className="text-xs text-gray-400">
+                        Loading website...
+                      </p>
                     </div>
                   )}
                   <iframe
@@ -137,17 +153,26 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                   <div className="space-y-8">
                     {/* Description */}
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">About</h3>
-                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{project.description}</p>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                        About
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        {project.description}
+                      </p>
                     </div>
 
                     {/* Technologies */}
                     {project.technologies?.length > 0 && (
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Technologies</h3>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                          Technologies
+                        </h3>
                         <div className="flex flex-wrap gap-2">
                           {project.technologies.map((tech, i) => (
-                            <span key={i} className="px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 text-sm font-medium">
+                            <span
+                              key={i}
+                              className="px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 text-sm font-medium"
+                            >
                               {tech}
                             </span>
                           ))}
@@ -158,9 +183,17 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                     {/* Video */}
                     {project.video_url && (
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Demo</h3>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                          Demo
+                        </h3>
                         <div className="aspect-video rounded-xl overflow-hidden bg-gray-900">
-                          <video src={project.video_url} controls loop className="w-full h-full" poster={project.thumbnail_url} />
+                          <video
+                            src={project.video_url}
+                            controls
+                            loop
+                            className="w-full h-full"
+                            poster={project.thumbnail_url}
+                          />
                         </div>
                       </div>
                     )}

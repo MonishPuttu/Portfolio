@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 export const useIntersectionObserver = (options = {}) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
@@ -16,7 +16,7 @@ export const useIntersectionObserver = (options = {}) => {
           setHasAnimated(true);
         }
       },
-      { threshold: 0.1, rootMargin: '0px', ...options }
+      { threshold: 0.1, rootMargin: "0px", ...options },
     );
 
     observer.observe(element);

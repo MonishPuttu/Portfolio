@@ -1,25 +1,25 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ThemeProvider } from './context/ThemeContext';
-import { trackPageView } from './utils/analytics';
+import React, { useEffect } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { ThemeProvider } from "./context/ThemeContext";
+import { trackPageView } from "./utils/analytics";
 
-import Loader from './components/Loader';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Projects from './components/Projects';
-import Achievements from './components/Achievements';
-import About from './components/About';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import Loader from "./components/Loader";
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import Projects from "./components/Projects";
+import Achievements from "./components/Achievements";
+import About from "./components/About";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 
 function App() {
   useEffect(() => {
     trackPageView(window.location.pathname);
 
     const handleRouteChange = () => trackPageView(window.location.pathname);
-    window.addEventListener('popstate', handleRouteChange);
-    return () => window.removeEventListener('popstate', handleRouteChange);
+    window.addEventListener("popstate", handleRouteChange);
+    return () => window.removeEventListener("popstate", handleRouteChange);
   }, []);
 
   return (

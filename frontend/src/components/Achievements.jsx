@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import axios from 'axios';
-import { Trophy, Eye, Star, Award, Target, TrendingUp } from 'lucide-react';
-import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import axios from "axios";
+import { Trophy, Eye, Star, Award, Target, TrendingUp } from "lucide-react";
+import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const iconMap = {
   trophy: Trophy,
@@ -27,7 +27,7 @@ const Achievements = () => {
         const res = await axios.get(`${API_URL}/achievements`);
         setAchievements(res.data.data);
       } catch (error) {
-        console.error('Error fetching achievements:', error);
+        console.error("Error fetching achievements:", error);
       } finally {
         setLoading(false);
       }
@@ -36,12 +36,18 @@ const Achievements = () => {
   }, []);
 
   const formatDate = (dateString) => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
   };
 
   return (
-    <section id="achievements" className="py-20 lg:py-28 px-6 lg:px-8 bg-gray-50/50 dark:bg-[#0d0d0d]">
+    <section
+      id="achievements"
+      className="py-20 lg:py-28 px-6 lg:px-8 bg-gray-50/50 dark:bg-[#0d0d0d]"
+    >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -63,7 +69,10 @@ const Achievements = () => {
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="animate-pulse h-48 bg-gray-100 dark:bg-gray-800/30 rounded-2xl" />
+              <div
+                key={i}
+                className="animate-pulse h-48 bg-gray-100 dark:bg-gray-800/30 rounded-2xl"
+              />
             ))}
           </div>
         )}
@@ -121,7 +130,9 @@ const Achievements = () => {
         {/* Empty */}
         {!loading && achievements.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-400 text-base">No achievements yet. Stay tuned!</p>
+            <p className="text-gray-400 text-base">
+              No achievements yet. Stay tuned!
+            </p>
           </div>
         )}
       </div>
