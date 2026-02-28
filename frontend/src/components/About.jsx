@@ -58,7 +58,7 @@ const About = () => {
   return (
     <section
       id="about"
-      className="py-20 lg:py-28 px-6 lg:px-8 bg-white dark:bg-[#0a0a0a]"
+      className="py-20 lg:py-28 px-6 lg:px-8 bg-white"
     >
       <div className="max-w-7xl mx-auto">
         <motion.div
@@ -82,10 +82,10 @@ const About = () => {
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.15 }}
               >
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-5 font-display">
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-5 font-display">
                   Creating Exceptional Digital Experiences
                 </h3>
-                <div className="space-y-4 text-[15px] text-gray-600 dark:text-gray-400 leading-relaxed">
+                <div className="space-y-4 text-[15px] text-gray-600 leading-relaxed">
                   <p>
                     I'm a UX/UI designer with a passion for crafting intuitive
                     and beautiful digital products. With over 5 years of
@@ -113,21 +113,21 @@ const About = () => {
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
+                <h4 className="text-lg font-bold text-gray-900 mb-6">
                   Skills & Expertise
                 </h4>
                 <div className="space-y-5">
                   {skills.map((skill, i) => (
                     <div key={skill.name}>
                       <div className="flex justify-between mb-1.5">
-                        <span className="text-sm font-semibold text-gray-800 dark:text-white">
+                        <span className="text-sm font-semibold text-gray-800">
                           {skill.name}
                         </span>
                         <span className="text-xs font-medium text-gray-400">
                           {skill.level}%
                         </span>
                       </div>
-                      <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={isInView ? { width: `${skill.level}%` } : {}}
@@ -152,7 +152,7 @@ const About = () => {
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
+                <h4 className="text-lg font-bold text-gray-900 mb-6">
                   What Drives Me
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -165,15 +165,15 @@ const About = () => {
                         animate={isInView ? { opacity: 1, y: 0 } : {}}
                         transition={{ duration: 0.4, delay: 0.3 + i * 0.08 }}
                         whileHover={{ y: -3 }}
-                        className="p-5 rounded-xl bg-gray-50 dark:bg-dark-card border border-gray-100 dark:border-gray-800 hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-300"
+                        className="p-5 rounded-xl bg-gray-50 border border-gray-100 hover:border-primary-200 transition-all duration-300"
                       >
-                        <div className="w-9 h-9 rounded-lg bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center mb-3">
-                          <Icon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                        <div className="w-9 h-9 rounded-lg bg-primary-50 flex items-center justify-center mb-3">
+                          <Icon className="w-4 h-4 text-primary-600" />
                         </div>
-                        <h5 className="text-sm font-bold text-gray-900 dark:text-white mb-1">
+                        <h5 className="text-sm font-bold text-gray-900 mb-1">
                           {value.title}
                         </h5>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                        <p className="text-xs text-gray-500 leading-relaxed">
                           {value.description}
                         </p>
                       </motion.div>
@@ -189,7 +189,7 @@ const About = () => {
                 transition={{ duration: 0.5, delay: 0.5 }}
                 className="mt-10"
               >
-                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-5">
+                <h4 className="text-lg font-bold text-gray-900 mb-5">
                   Tools I Use
                 </h4>
                 <div className="flex flex-wrap gap-2">
@@ -197,7 +197,7 @@ const About = () => {
                     <motion.span
                       key={tool}
                       whileHover={{ scale: 1.04 }}
-                      className="px-3.5 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm font-medium border border-transparent hover:border-primary-300 dark:hover:border-primary-700 transition-colors cursor-default"
+                      className="px-3.5 py-1.5 rounded-lg bg-gray-100 text-gray-600 text-sm font-medium border border-transparent hover:border-primary-300 transition-colors cursor-default"
                     >
                       {tool}
                     </motion.span>

@@ -49,14 +49,14 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
       >
         {/* Video */}
         <div
-          className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-900 cursor-pointer video-container shadow-lg hover:shadow-2xl transition-shadow duration-500"
+          className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-gray-100 cursor-pointer video-container shadow-lg hover:shadow-2xl transition-shadow duration-500"
           onClick={handleClick}
         >
           {project.video_url ? (
             <>
               {/* Lazy loading placeholder */}
               {!videoLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
                   <div className="spinner" />
                 </div>
               )}
@@ -75,9 +75,9 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
               />
             </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
               <div className="text-center">
-                <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-gray-200 flex items-center justify-center">
                   <Play className="w-6 h-6 text-gray-400" />
                 </div>
                 <p className="text-gray-400 text-xs">Preview</p>
@@ -99,10 +99,10 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
         {/* Info row */}
         <div className="mt-5 flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-[0.1em] mb-1.5">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-[0.1em] mb-1.5">
               {project.company}
             </p>
-            <h3 className="text-base md:text-lg font-medium text-gray-900 dark:text-white leading-snug line-clamp-2">
+            <h3 className="text-base md:text-lg font-medium text-gray-900 leading-snug line-clamp-2">
               {project.description}
             </h3>
           </div>
@@ -133,7 +133,7 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
         delay: index * 0.1,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="group bg-gray-50 dark:bg-dark-card rounded-2xl overflow-hidden card-hover cursor-pointer"
+      className="group bg-gray-50 rounded-2xl overflow-hidden card-hover cursor-pointer"
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -141,10 +141,10 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
       <div className="flex flex-col sm:flex-row">
         {/* Text */}
         <div className="p-6 sm:p-8 sm:w-2/5 flex flex-col justify-center">
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 font-display">
+          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 font-display">
             {project.company}
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
+          <p className="text-sm text-gray-500 leading-relaxed mb-4">
             {project.description}
           </p>
           <motion.div
@@ -183,7 +183,7 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
               }`}
             />
           ) : (
-            <div className="w-full h-full min-h-[200px] bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+            <div className="w-full h-full min-h-[200px] bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
               <Play className="w-8 h-8 text-gray-400" />
             </div>
           )}

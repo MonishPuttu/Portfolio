@@ -24,9 +24,7 @@ const Footer = () => {
 
   const pageLinks = [
     { name: "Projects", id: "projects" },
-    { name: "Achievements", id: "achievements" },
     { name: "About", id: "about" },
-    { name: "Contact", id: "contact" },
   ];
 
   const scrollTo = (id) => {

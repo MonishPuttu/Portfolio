@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ThemeProvider } from "./context/ThemeContext";
 import { trackPageView } from "./utils/analytics";
 
 import Loader from "./components/Loader";
@@ -23,33 +22,31 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider>
-      <Router>
-        <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 transition-colors duration-300">
-          <Loader />
+    <Router>
+      <div className="min-h-screen bg-white text-gray-900">
+        <Loader />
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className="page-transition"
-            >
-              <Navbar />
-              <main>
-                <Hero />
-                <Projects />
-                <Achievements />
-                <About />
-                <Contact />
-              </main>
-              <Footer />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </Router>
-    </ThemeProvider>
+        <AnimatePresence mode="wait">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="page-transition"
+          >
+            <Navbar />
+            <main>
+              <Hero />
+              <Projects />
+              <Achievements />
+              <About />
+              <Contact />
+            </main>
+            <Footer />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </Router>
   );
 }
 

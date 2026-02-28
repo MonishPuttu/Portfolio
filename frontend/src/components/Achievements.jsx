@@ -46,7 +46,7 @@ const Achievements = () => {
   return (
     <section
       id="achievements"
-      className="py-20 lg:py-28 px-6 lg:px-8 bg-gray-50/50 dark:bg-[#0d0d0d]"
+      className="py-20 lg:py-28 px-6 lg:px-8 bg-gray-50/50"
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
@@ -60,7 +60,7 @@ const Achievements = () => {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
             <span className="gradient-text">Achievements</span>
           </h2>
-          <p className="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-lg mx-auto">
+          <p className="mt-4 text-base text-gray-500 max-w-lg mx-auto">
             Milestones and recognitions throughout my journey
           </p>
         </motion.div>
@@ -71,7 +71,7 @@ const Achievements = () => {
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="animate-pulse h-48 bg-gray-100 dark:bg-gray-800/30 rounded-2xl"
+                className="animate-pulse h-48 bg-gray-100 rounded-2xl"
               />
             ))}
           </div>
@@ -91,32 +91,32 @@ const Achievements = () => {
                   whileHover={{ y: -4 }}
                   className="group"
                 >
-                  <div className="h-full p-6 rounded-2xl bg-white dark:bg-dark-card border border-gray-100 dark:border-gray-800 hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-300 card-hover">
+                  <div className="h-full p-6 rounded-2xl bg-white border border-gray-100 hover:border-primary-300 transition-all duration-300 card-hover">
                     {/* Icon */}
                     <div className="mb-4 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center group-hover:scale-105 transition-transform">
-                        <Icon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                      <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <Icon className="w-5 h-5 text-primary-600" />
                       </div>
                       {achievement.category && (
-                        <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400">
+                        <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-primary-50 text-primary-600">
                           {achievement.category}
                         </span>
                       )}
                     </div>
 
                     {/* Content */}
-                    <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2 leading-snug">
+                    <h3 className="text-base font-bold text-gray-900 mb-2 leading-snug">
                       {achievement.title}
                     </h3>
                     {achievement.description && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-3">
+                      <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
                         {achievement.description}
                       </p>
                     )}
 
                     {/* Date */}
                     {achievement.date && (
-                      <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
+                      <p className="mt-4 text-xs text-gray-400">
                         {formatDate(achievement.date)}
                       </p>
                     )}

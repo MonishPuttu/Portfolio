@@ -51,7 +51,7 @@ const Projects = () => {
   return (
     <section
       id="projects"
-      className="py-20 lg:py-28 px-6 lg:px-8 bg-white dark:bg-[#0a0a0a]"
+      className="py-20 lg:py-28 px-6 lg:px-8 bg-white"
     >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
@@ -65,7 +65,7 @@ const Projects = () => {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
             <span className="gradient-text">Featured Projects</span>
           </h2>
-          <p className="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-xl">
+          <p className="mt-4 text-base text-gray-500 max-w-xl">
             A collection of commercial projects showcasing innovative solutions
             for leading brands
           </p>
@@ -76,13 +76,13 @@ const Projects = () => {
           <div className="space-y-16">
             {[1, 2, 3].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-[16/9] bg-gray-100 dark:bg-gray-800/50 rounded-2xl mb-6" />
+                <div className="aspect-[16/9] bg-gray-100 rounded-2xl mb-6" />
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="h-3 bg-gray-100 dark:bg-gray-800/50 rounded w-20 mb-3" />
-                    <div className="h-5 bg-gray-100 dark:bg-gray-800/50 rounded w-64" />
+                    <div className="h-3 bg-gray-100 rounded w-20 mb-3" />
+                    <div className="h-5 bg-gray-100 rounded w-64" />
                   </div>
-                  <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800/50 rounded-full" />
+                  <div className="w-12 h-12 bg-gray-100 rounded-full" />
                 </div>
               </div>
             ))}
@@ -140,10 +140,10 @@ const Projects = () => {
             animate={{ opacity: 1 }}
             className="text-center py-24"
           >
-            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gray-100 flex items-center justify-center">
               <span className="text-2xl">📁</span>
             </div>
-            <p className="text-gray-400 dark:text-gray-500 text-base">
+            <p className="text-gray-400 text-base">
               No projects found. Check back soon!
             </p>
           </motion.div>

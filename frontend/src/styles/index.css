@@ -13,14 +13,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #ffffff;
   color: #1a1a1a;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
-}
-
-.dark body {
-  background-color: #0a0a0a;
-  color: #e5e5e5;
 }
 
 /* ── Scrollbar ──────────────────────────────────────────── */
@@ -43,10 +35,6 @@ body {
   background-color: rgba(168, 85, 247, 0.25);
   color: #581c87;
 }
-.dark ::selection {
-  background-color: rgba(168, 85, 247, 0.35);
-  color: #f3e8ff;
-}
 
 /* ── Focus ──────────────────────────────────────────────── */
 *:focus-visible {
@@ -59,9 +47,6 @@ body {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-}
-.dark .glass {
-  background: rgba(0, 0, 0, 0.2);
 }
 
 /* ── Gradient Text ──────────────────────────────────────── */
@@ -93,9 +78,6 @@ body {
 .card-hover:hover {
   transform: translateY(-6px);
   box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.15);
-}
-.dark .card-hover:hover {
-  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.5);
 }
 
 /* ── Video Overlay ──────────────────────────────────────── */

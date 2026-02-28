@@ -30,7 +30,7 @@ const Loader = () => {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white dark:bg-[#0a0a0a]"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white"
         >
           {/* Three animated bars - matching screenshot */}
           <motion.div
@@ -60,7 +60,7 @@ const Loader = () => {
           </motion.div>
 
           {/* Progress bar */}
-          <div className="w-48 h-[2px] bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+          <div className="w-48 h-[2px] bg-gray-200 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-primary-500 rounded-full"
               style={{ width: `${Math.min(progress, 100)}%` }}
@@ -71,7 +71,7 @@ const Loader = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="mt-6 text-[11px] font-medium tracking-[0.2em] uppercase text-gray-400 dark:text-gray-600"
+            className="mt-6 text-[11px] font-medium tracking-[0.2em] uppercase text-gray-400"
           >
             Loading
           </motion.p>

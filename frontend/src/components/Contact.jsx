@@ -71,16 +71,16 @@ const Contact = () => {
   };
 
   const inputClass = (field) =>
-    `w-full px-4 py-3.5 rounded-xl bg-gray-50 dark:bg-gray-800/50 border ${
+    `w-full px-4 py-3.5 rounded-xl bg-gray-50 border ${
       errors[field]
         ? "border-red-400 focus:border-red-500 focus:ring-red-500/10"
-        : "border-gray-200 dark:border-gray-700 focus:border-primary-500 focus:ring-primary-500/10"
-    } focus:outline-none focus:ring-4 transition-all text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500`;
+        : "border-gray-200 focus:border-primary-500 focus:ring-primary-500/10"
+    } focus:outline-none focus:ring-4 transition-all text-sm text-gray-900 placeholder-gray-400`;
 
   return (
     <section
       id="contact"
-      className="py-20 lg:py-28 px-6 lg:px-8 bg-gray-50/50 dark:bg-[#0d0d0d]"
+      className="py-20 lg:py-28 px-6 lg:px-8 bg-gray-50/50"
     >
       <Toaster position="top-center" />
       <div className="max-w-3xl mx-auto">
@@ -95,7 +95,7 @@ const Contact = () => {
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
               <span className="gradient-text">Get In Touch</span>
             </h2>
-            <p className="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+            <p className="mt-4 text-base text-gray-500 max-w-md mx-auto">
               Have a project in mind or just want to chat? I'd love to hear from
               you!
             </p>
@@ -106,7 +106,7 @@ const Contact = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="bg-white dark:bg-dark-card rounded-2xl p-6 md:p-10 shadow-sm border border-gray-100 dark:border-gray-800"
+            className="bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-gray-100"
           >
             {sent ? (
               <motion.div
@@ -114,18 +114,18 @@ const Contact = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-10"
               >
-                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center">
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-primary-50 flex items-center justify-center">
                   <span className="text-2xl">✉️</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
                   Message Sent!
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                <p className="text-sm text-gray-500 mb-6">
                   Thank you for reaching out. I'll respond shortly.
                 </p>
                 <button
                   onClick={() => setSent(false)}
-                  className="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline"
+                  className="text-sm font-medium text-primary-600 hover:underline"
                 >
                   Send another message
                 </button>
@@ -135,7 +135,7 @@ const Contact = () => {
                 <div>
                   <label
                     htmlFor="name"
-                    className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wider"
                   >
                     <User className="w-3.5 h-3.5" /> Name
                   </label>
@@ -162,7 +162,7 @@ const Contact = () => {
                 <div>
                   <label
                     htmlFor="email"
-                    className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wider"
                   >
                     <Mail className="w-3.5 h-3.5" /> Email
                   </label>
@@ -189,7 +189,7 @@ const Contact = () => {
                 <div>
                   <label
                     htmlFor="message"
-                    className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wider"
                   >
                     <MessageSquare className="w-3.5 h-3.5" /> Message
                   </label>
@@ -248,7 +248,7 @@ const Contact = () => {
             </p>
             <a
               href="mailto:your.email@example.com"
-              className="text-base font-semibold text-primary-600 dark:text-primary-400 hover:underline"
+              className="text-base font-semibold text-primary-600 hover:underline"
             >
               your.email@example.com
             </a>
