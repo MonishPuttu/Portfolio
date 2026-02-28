@@ -7,32 +7,48 @@ import Footer from "./Footer";
 
 const About = () => {
   const skills = [
-    { name: "React / Next.js", level: 92, color: "from-primary-500 to-primary-600" },
-    { name: "Node.js / Express", level: 90, color: "from-purple-500 to-purple-600" },
+    {
+      name: "React / Next.js",
+      level: 92,
+      color: "from-primary-500 to-primary-600",
+    },
+    {
+      name: "Node.js / Express",
+      level: 90,
+      color: "from-purple-500 to-purple-600",
+    },
     { name: "TypeScript", level: 88, color: "from-fuchsia-500 to-fuchsia-600" },
-    { name: "Docker / Kubernetes", level: 80, color: "from-violet-500 to-violet-600" },
+    {
+      name: "Docker / Kubernetes",
+      level: 80,
+      color: "from-violet-500 to-violet-600",
+    },
   ];
 
   const values = [
     {
       icon: Code2,
       title: "Full-Stack",
-      description: "Building end-to-end applications from frontend to backend with modern stacks",
+      description:
+        "Building end-to-end applications from frontend to backend with modern stacks",
     },
     {
       icon: Rocket,
       title: "Ship Fast",
-      description: "Rapid iteration and deployment — from idea to production quickly",
+      description:
+        "Rapid iteration and deployment — from idea to production quickly",
     },
     {
       icon: Users,
       title: "Open Source",
-      description: "Active contributor to open source projects like Talawa by Palisadoes Foundation",
+      description:
+        "Active contributor to open source projects like Talawa by Palisadoes Foundation",
     },
     {
       icon: Zap,
       title: "Real-Time",
-      description: "Experience building real-time systems with WebSockets and live collaboration",
+      description:
+        "Experience building real-time systems with WebSockets and live collaboration",
     },
   ];
 
@@ -93,14 +109,16 @@ const About = () => {
                     and have hands-on experience with Docker and Kubernetes.
                   </p>
                   <p>
-                    I love building real-time applications, voice-driven AI platforms,
-                    and developer tools. My projects range from collaborative drawing
-                    apps deployed on AWS to interactive full-stack playgrounds on Vercel.
+                    I love building real-time applications, voice-driven AI
+                    platforms, and developer tools. My projects range from
+                    collaborative drawing apps deployed on AWS to interactive
+                    full-stack playgrounds on Vercel.
                   </p>
                   <p>
-                    I'm also an active open source contributor — I've shipped PRs to
-                    PalisadoesFoundation's Talawa project with 430+ GitHub contributions
-                    in the last year. I believe in learning by building and shipping.
+                    I'm also an active open source contributor — I've shipped
+                    PRs to PalisadoesFoundation's Talawa project with 430+
+                    GitHub contributions in the last year. I believe in learning
+                    by building and shipping.
                   </p>
                 </div>
               </motion.div>

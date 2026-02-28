@@ -57,10 +57,14 @@ const Navbar = () => {
       navigate("/");
       // Wait for the home page to render, then scroll
       setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document
+          .getElementById(id)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
     } else {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document
+        .getElementById(id)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -104,7 +108,9 @@ const Navbar = () => {
             onClick={handleLogoClick}
           >
             <h1 className="text-xl lg:text-2xl font-bold tracking-tight">
-              <span className="text-primary-600 font-display">MONISH PUTTU</span>
+              <span className="text-primary-600 font-display">
+                MONISH PUTTU
+              </span>
             </h1>
           </motion.div>
 

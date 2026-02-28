@@ -78,10 +78,7 @@ const Contact = () => {
     } focus:outline-none focus:ring-4 transition-all text-sm text-gray-900 placeholder-gray-400`;
 
   return (
-    <section
-      id="contact"
-      className="py-20 lg:py-28 px-6 lg:px-8 bg-gray-50/50"
-    >
+    <section id="contact" className="py-20 lg:py-28 px-6 lg:px-8 bg-gray-50/50">
       <Toaster position="top-center" />
       <div className="max-w-3xl mx-auto">
         <motion.div

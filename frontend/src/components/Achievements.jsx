@@ -130,8 +130,13 @@ const Achievements = () => {
                 <Activity className="w-7 h-7 text-green-600" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-gray-900">430+ contributions</p>
-                <p className="text-sm text-gray-500 mt-1">in the last year across personal projects and open source repositories</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  430+ contributions
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  in the last year across personal projects and open source
+                  repositories
+                </p>
               </div>
             </motion.div>
 
@@ -147,12 +152,18 @@ const Achievements = () => {
                   <Users className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">@PalisadoesFoundation</h3>
-                  <p className="text-sm text-gray-500">Organization Contributor</p>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    @PalisadoesFoundation
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Organization Contributor
+                  </p>
                 </div>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Active contributor to Talawa — an open source project for community organization management. Contributed to both the API and Admin repositories.
+                Active contributor to Talawa — an open source project for
+                community organization management. Contributed to both the API
+                and Admin repositories.
               </p>
               <a
                 href="https://github.com/PalisadoesFoundation"
@@ -194,12 +205,16 @@ const Achievements = () => {
                   <Award className="w-6 h-6 text-amber-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">Highest Cumulative GPA</h3>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    Highest Cumulative GPA
+                  </h3>
                   <p className="text-sm text-gray-500">Department Award</p>
                 </div>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Awarded for achieving the highest cumulative GPA in the department, recognizing consistent academic excellence throughout the program.
+                Awarded for achieving the highest cumulative GPA in the
+                department, recognizing consistent academic excellence
+                throughout the program.
               </p>
             </motion.div>
 
@@ -216,12 +231,16 @@ const Achievements = () => {
                   <Trophy className="w-6 h-6 text-indigo-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">SIH Selection — 2024</h3>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    SIH Selection — 2024
+                  </h3>
                   <p className="text-sm text-gray-500">Smart India Hackathon</p>
                 </div>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Selected at the inter-college level for Smart India Hackathon 2024, competing with innovative solutions to real-world problem statements.
+                Selected at the inter-college level for Smart India Hackathon
+                2024, competing with innovative solutions to real-world problem
+                statements.
               </p>
             </motion.div>
 
@@ -238,12 +257,16 @@ const Achievements = () => {
                   <Trophy className="w-6 h-6 text-indigo-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">SIH Selection — 2025</h3>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    SIH Selection — 2025
+                  </h3>
                   <p className="text-sm text-gray-500">Smart India Hackathon</p>
                 </div>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Selected again at the inter-college level for Smart India Hackathon 2025, demonstrating continued excellence in hackathon competitions.
+                Selected again at the inter-college level for Smart India
+                Hackathon 2025, demonstrating continued excellence in hackathon
+                competitions.
               </p>
             </motion.div>
           </div>

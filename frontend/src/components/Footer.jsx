@@ -1,12 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Github,
-  Linkedin,
-  FileText,
-  ExternalLink,
-} from "lucide-react";
+import { Github, Linkedin, FileText, ExternalLink } from "lucide-react";
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -16,7 +11,11 @@ const Footer = () => {
 
   const socialLinks = [
     { name: "GitHub", icon: Github, url: "https://github.com/MonishPuttu" },
-    { name: "LinkedIn", icon: Linkedin, url: "https://linkedin.com/in/monishputtu" },
+    {
+      name: "LinkedIn",
+      icon: Linkedin,
+      url: "https://linkedin.com/in/monishputtu",
+    },
   ];
 
   const contactLinks = [
@@ -25,7 +24,12 @@ const Footer = () => {
 
   const pageLinks = [
     { name: "Projects", id: "projects", route: false },
-    { name: "Achievements", id: "achievements", route: true, path: "/achievements" },
+    {
+      name: "Achievements",
+      id: "achievements",
+      route: true,
+      path: "/achievements",
+    },
     { name: "About", id: "about", route: true, path: "/about" },
   ];
 
@@ -38,10 +42,14 @@ const Footer = () => {
     if (!isHome) {
       navigate("/");
       setTimeout(() => {
-        document.getElementById(link.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document
+          .getElementById(link.id)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
     } else {
-      document.getElementById(link.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document
+        .getElementById(link.id)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 

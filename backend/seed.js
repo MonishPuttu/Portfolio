@@ -56,13 +56,7 @@ const seedProjects = [
     color: "#10B981",
     animationCredit: null,
     category: "Featured",
-    technologies: [
-      "Next.js",
-      "TypeScript",
-      "Node.js",
-      "Express",
-      "Vercel",
-    ],
+    technologies: ["Next.js", "TypeScript", "Node.js", "Express", "Vercel"],
   },
   // ── Other Projects (hidden by default) ─────────────────
   {
@@ -96,32 +90,28 @@ const seedProjects = [
 const seedAchievements = [
   {
     title: "Pull Shark x2",
-    description:
-      "Opened pull requests that have been merged — awarded twice.",
+    description: "Opened pull requests that have been merged — awarded twice.",
     icon: "git-pull-request",
     date: new Date("2025-06-01"),
     category: "GitHub",
   },
   {
     title: "Pair Extraordinaire",
-    description:
-      "Co-authored commits on a merged pull request.",
+    description: "Co-authored commits on a merged pull request.",
     icon: "star",
     date: new Date("2025-08-01"),
     category: "GitHub",
   },
   {
     title: "Quickdraw",
-    description:
-      "Closed an issue or pull request within 5 minutes of opening.",
+    description: "Closed an issue or pull request within 5 minutes of opening.",
     icon: "zap",
     date: new Date("2025-07-01"),
     category: "GitHub",
   },
   {
     title: "YOLO",
-    description:
-      "Merged a pull request without a code review.",
+    description: "Merged a pull request without a code review.",
     icon: "award",
     date: new Date("2025-09-01"),
     category: "GitHub",
