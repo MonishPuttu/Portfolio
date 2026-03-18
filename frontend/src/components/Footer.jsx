@@ -1,10 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Github, Linkedin, FileText, ExternalLink } from "lucide-react";
+import { Github, Linkedin, ExternalLink } from "lucide-react";
 
 const Footer = () => {
-  const year = new Date().getFullYear();
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === "/";
@@ -172,34 +171,6 @@ const Footer = () => {
           </motion.div>
         </div>
 
-        {/* Bottom Bar */}
-        <motion.div
-          className="pt-6 border-t border-white/10"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p className="text-xs text-gray-500">
-              © {year} Monish Puttu. All rights reserved.
-            </p>
-            <div className="flex items-center gap-5 text-xs text-gray-500">
-              <a
-                href="/privacy"
-                className="hover:text-primary-400 transition-colors"
-              >
-                Privacy
-              </a>
-              <a
-                href="/terms"
-                className="hover:text-primary-400 transition-colors"
-              >
-                Terms
-              </a>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </footer>
   );
