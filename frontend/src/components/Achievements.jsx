@@ -4,7 +4,6 @@ import {
   Github,
   ExternalLink,
   Activity,
-  Users,
   Award,
   Trophy,
   Briefcase,
@@ -148,8 +147,53 @@ const Achievements = () => {
               whileHover={{ y: -3 }}
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 rounded-xl overflow-hidden border border-violet-100">
+                  <img
+                    src="https://github.com/hermetoproject.png"
+                    alt="Hermeto organization"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    @hermetoproject
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Organization Contributor
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Open source contributor to the Hermeto organization, actively
+                supporting community repositories and collaborative development.
+              </p>
+              <a
+                href="https://github.com/hermetoproject"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 mt-4 text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors"
+              >
+                View Organization
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </motion.div>
+
+            <motion.div
+              className="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.45 }}
+              whileHover={{ y: -3 }}
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-xl overflow-hidden border border-blue-100">
+                  <img
+                    src="https://github.com/PalisadoesFoundation.png"
+                    alt="Palisadoes Foundation organization"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-900">
