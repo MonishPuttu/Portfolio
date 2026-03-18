@@ -49,7 +49,10 @@ const Achievements = () => {
       </section>
 
       {/* Work Experience Timeline */}
-      <section className="px-6 lg:px-8 pb-8">
+      <section
+        id="achievements-content"
+        className="px-6 lg:px-8 pb-8 scroll-mt-24"
+      >
         <div className="max-w-7xl mx-auto">
           <motion.h2
             className="text-xl font-bold text-gray-900 mb-8"

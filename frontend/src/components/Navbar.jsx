@@ -43,28 +43,41 @@ const Navbar = () => {
 
   const handleNav = (id) => {
     setMobileOpen(false);
+
+    const replayScrollSequence = (targetId) => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+
+      setTimeout(() => {
+        document
+          .getElementById(targetId)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 850);
+    };
+
     if (id === "achievements") {
-      navigate("/achievements");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (location.pathname !== "/achievements") {
+        navigate("/achievements");
+        setTimeout(() => replayScrollSequence("achievements-content"), 80);
+      } else {
+        replayScrollSequence("achievements-content");
+      }
       return;
     }
     if (id === "about") {
-      navigate("/about");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (location.pathname !== "/about") {
+        navigate("/about");
+        setTimeout(() => replayScrollSequence("about-content"), 80);
+      } else {
+        replayScrollSequence("about-content");
+      }
       return;
     }
     if (!isHome) {
       navigate("/");
       // Wait for the home page to render, then scroll
-      setTimeout(() => {
-        document
-          .getElementById(id)
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
+      setTimeout(() => replayScrollSequence(id), 80);
     } else {
-      document
-        .getElementById(id)
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      replayScrollSequence(id);
     }
   };
 
