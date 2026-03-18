@@ -104,21 +104,20 @@ const About = () => {
                 </h3>
                 <div className="space-y-4 text-[15px] text-gray-600 leading-relaxed">
                   <p>
-                    I'm Monish Puttu — a final-year BE student passionate about
-                    full-stack development. I work with Node.js, React, Next.js,
-                    and have hands-on experience with Docker and Kubernetes.
+                    I’m Monish Puttu, a final-year BE student with a strong
+                    passion for full-stack development. I specialize in building
+                    scalable applications using Node.js, React, and Next.js, and
+                    have hands-on experience with containerization and
+                    orchestration tools like Docker and Kubernetes. I’m also
+                    deeply interested in supply chain security and its evolving
+                    challenges.
                   </p>
                   <p>
-                    I love building real-time applications, voice-driven AI
-                    platforms, and developer tools. My projects range from
-                    collaborative drawing apps deployed on AWS to interactive
-                    full-stack playgrounds on Vercel.
-                  </p>
-                  <p>
-                    I'm also an active open source contributor — I've shipped
-                    PRs to PalisadoesFoundation's Talawa project with 430+
-                    GitHub contributions in the last year. I believe in learning
-                    by building and shipping.
+                    I’m also an active open source contributor — I’ve
+                    contributed to both the Hermeto project and
+                    PalisadoesFoundation’s Talawa project, with 480+ GitHub
+                    contributions in the last year. I strongly believe in
+                    learning by building and shipping.
                   </p>
                 </div>
               </motion.div>
