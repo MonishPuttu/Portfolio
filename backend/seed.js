@@ -8,7 +8,7 @@ const seedProjects = [
     company: "AniTalk",
     description:
       "A voice-based agentic platform that lets users interact with custom AI agents through natural voice conversations. Features a unique anime character mode for immersive voice chat, custom agent creation, context-aware dialogue, and payment integration.",
-    cloudinaryVideoPublicId: null,
+    cloudinaryVideoPublicId: "AniTalk_sd0hc2.mp4",
     cloudinaryThumbnailPublicId: null,
     videoUrl: null,
     thumbnailUrl: null,
@@ -31,7 +31,7 @@ const seedProjects = [
     company: "Renz",
     description:
       "An interactive full-stack playground that lets you build a React frontend and Node.js backend and preview the output instantly in the browser. Iterate on frontend and backend code together with live results.",
-    cloudinaryVideoPublicId: null,
+    cloudinaryVideoPublicId: "Renz_rljjog.mp4",
     cloudinaryThumbnailPublicId: null,
     videoUrl: null,
     thumbnailUrl: null,
@@ -46,7 +46,7 @@ const seedProjects = [
     company: "InternHub",
     description:
       "A platform for managing internship applications, tracking progress, and connecting students with opportunities.",
-    cloudinaryVideoPublicId: null,
+    cloudinaryVideoPublicId: "internhub_inhdei.mp4",
     cloudinaryThumbnailPublicId: null,
     videoUrl: null,
     thumbnailUrl: null,

@@ -21,12 +21,14 @@ const fallbackThumbnailUrl =
 export const isCloudinaryConfigured = () =>
   Boolean(cloudinaryCloudName && cloudinaryApiKey && cloudinaryApiSecret);
 
-if (isCloudinaryConfigured()) {
+const canGenerateCloudinaryDeliveryUrls = () => Boolean(cloudinaryCloudName);
+
+if (canGenerateCloudinaryDeliveryUrls()) {
   cloudinary.config({
     cloud_name: cloudinaryCloudName,
-    api_key: cloudinaryApiKey,
-    api_secret: cloudinaryApiSecret,
     secure: true,
+    ...(cloudinaryApiKey ? { api_key: cloudinaryApiKey } : {}),
+    ...(cloudinaryApiSecret ? { api_secret: cloudinaryApiSecret } : {}),
   });
 }
 
@@ -116,7 +118,7 @@ export const extractPublicIdFromCloudinaryUrl = (url) => {
 };
 
 export const buildCloudinaryVideoUrl = (videoPublicId) => {
-  if (!videoPublicId || !isCloudinaryConfigured()) return null;
+  if (!videoPublicId || !canGenerateCloudinaryDeliveryUrls()) return null;
 
   return cloudinary.url(videoPublicId, {
     resource_type: "video",
@@ -130,7 +132,7 @@ export const buildCloudinaryThumbnailUrl = (
   thumbnailPublicId,
   fallbackVideoPublicId,
 ) => {
-  if (!isCloudinaryConfigured()) return null;
+  if (!canGenerateCloudinaryDeliveryUrls()) return null;
 
   if (thumbnailPublicId) {
     return cloudinary.url(thumbnailPublicId, {
