@@ -304,13 +304,13 @@ export const hydrateProjectMedia = (project) => {
       thumbnailPublicId,
     });
 
-  const resolvedVideoUrl = videoPublicId
-    ? generatedVideoUrl || project.videoUrl
-    : project.videoUrl;
+  const resolvedVideoUrl =
+    project.videoUrl || (videoPublicId ? generatedVideoUrl : null);
 
-  const resolvedThumbnailUrl = videoPublicId
-    ? generatedThumbnailUrl || project.thumbnailUrl || fallbackThumbnailUrl
-    : project.thumbnailUrl || fallbackThumbnailUrl;
+  const resolvedThumbnailUrl =
+    project.thumbnailUrl ||
+    (videoPublicId ? generatedThumbnailUrl : null) ||
+    fallbackThumbnailUrl;
 
   return {
     ...project,

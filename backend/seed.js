@@ -10,7 +10,8 @@ const seedProjects = [
       "A voice-based agentic platform that lets users interact with custom AI agents through natural voice conversations. Features a unique anime character mode for immersive voice chat, custom agent creation, context-aware dialogue, and payment integration.",
     cloudinaryVideoPublicId: "AniTalk_sd0hc2.mp4",
     cloudinaryThumbnailPublicId: null,
-    videoUrl: null,
+    videoUrl:
+      "https://res.cloudinary.com/dyypcsoow/video/upload/v1774601594/AniTalk_sd0hc2.mp4",
     thumbnailUrl: null,
     projectUrl: "https://ani-talk-ai.vercel.app/",
     color: "#8B5CF6",
@@ -33,7 +34,8 @@ const seedProjects = [
       "An interactive full-stack playground that lets you build a React frontend and Node.js backend and preview the output instantly in the browser. Iterate on frontend and backend code together with live results.",
     cloudinaryVideoPublicId: "Renz_rljjog.mp4",
     cloudinaryThumbnailPublicId: null,
-    videoUrl: null,
+    videoUrl:
+      "https://res.cloudinary.com/dyypcsoow/video/upload/v1774601595/Renz_rljjog.mp4",
     thumbnailUrl: null,
     projectUrl: "https://renzai.vercel.app/",
     color: "#10B981",
@@ -48,7 +50,8 @@ const seedProjects = [
       "A platform for managing internship applications, tracking progress, and connecting students with opportunities.",
     cloudinaryVideoPublicId: "internhub_inhdei.mp4",
     cloudinaryThumbnailPublicId: null,
-    videoUrl: null,
+    videoUrl:
+      "https://res.cloudinary.com/dyypcsoow/video/upload/v1774610628/internhub_inhdei.mp4",
     thumbnailUrl: null,
     projectUrl: "https://github.com/MonishPuttu/InternHub",
     color: "#F59E0B",
