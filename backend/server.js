@@ -20,6 +20,32 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 const isProduction = process.env.NODE_ENV === "production";
 
+const validateProductionEnv = () => {
+  if (!isProduction) return;
+
+  const requiredVars = [
+    "DATABASE_URL",
+    "JWT_SECRET",
+    "FRONTEND_URL",
+    "ADMIN_USERNAME",
+    "ADMIN_PASSWORD_HASH",
+  ];
+
+  const missing = requiredVars.filter((name) => !process.env[name]);
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required production environment variables: ${missing.join(", ")}`,
+    );
+  }
+
+  if (process.env.JWT_SECRET.length < 32) {
+    throw new Error("JWT_SECRET must be at least 32 characters in production");
+  }
+};
+
+validateProductionEnv();
+
 // Middleware
 app.use(
   helmet({

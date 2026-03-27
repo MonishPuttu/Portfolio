@@ -12,7 +12,7 @@ const Projects = () => {
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [ref, isInView] = useIntersectionObserver({ threshold: 0.05 });
+  const [ref] = useIntersectionObserver({ threshold: 0.05 });
 
   useEffect(() => {
     fetchProjects();
