@@ -139,7 +139,9 @@ export const createProject = async (req, res) => {
       })
       .returning();
 
-    res.status(201).json({ success: true, data: hydrateProjectMedia(newProject[0]) });
+    res
+      .status(201)
+      .json({ success: true, data: hydrateProjectMedia(newProject[0]) });
   } catch (error) {
     console.error("Create project error:", error);
 
@@ -211,14 +213,14 @@ export const updateProject = async (req, res) => {
 
       const resolvedMedia = await resolveProjectMedia({
         videoPublicId: hasVideoPublicIdInput
-          ? req.body.cloudinaryVideoPublicId ?? req.body.videoPublicId
+          ? (req.body.cloudinaryVideoPublicId ?? req.body.videoPublicId)
           : currentProject.cloudinaryVideoPublicId,
         videoUrl:
           req.body.videoUrl !== undefined
             ? req.body.videoUrl
             : currentProject.videoUrl,
         thumbnailPublicId: hasThumbnailPublicIdInput
-          ? req.body.cloudinaryThumbnailPublicId ?? req.body.thumbnailPublicId
+          ? (req.body.cloudinaryThumbnailPublicId ?? req.body.thumbnailPublicId)
           : currentProject.cloudinaryThumbnailPublicId,
         thumbnailUrl:
           req.body.thumbnailUrl !== undefined
@@ -227,7 +229,8 @@ export const updateProject = async (req, res) => {
         projectId: id,
       });
 
-      updateData.cloudinaryVideoPublicId = resolvedMedia.cloudinaryVideoPublicId;
+      updateData.cloudinaryVideoPublicId =
+        resolvedMedia.cloudinaryVideoPublicId;
       updateData.cloudinaryThumbnailPublicId =
         resolvedMedia.cloudinaryThumbnailPublicId;
       updateData.videoUrl = resolvedMedia.videoUrl;

@@ -107,9 +107,7 @@ export const validateProject = [
     .isLength({ max: 255 })
     .withMessage("videoPublicId must be under 255 characters")
     .custom((value) => isAllowedCloudinaryPublicId(value))
-    .withMessage(
-      `videoPublicId must start with ${cloudinaryRootFolder}/`,
-    ),
+    .withMessage(`videoPublicId must start with ${cloudinaryRootFolder}/`),
   body("cloudinaryVideoPublicId")
     .optional({ values: "null" })
     .isLength({ max: 255 })
@@ -123,9 +121,7 @@ export const validateProject = [
     .isLength({ max: 255 })
     .withMessage("thumbnailPublicId must be under 255 characters")
     .custom((value) => isAllowedCloudinaryPublicId(value))
-    .withMessage(
-      `thumbnailPublicId must start with ${cloudinaryRootFolder}/`,
-    ),
+    .withMessage(`thumbnailPublicId must start with ${cloudinaryRootFolder}/`),
   body("cloudinaryThumbnailPublicId")
     .optional({ values: "null" })
     .isLength({ max: 255 })

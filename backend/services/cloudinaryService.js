@@ -89,7 +89,9 @@ export const extractPublicIdFromCloudinaryUrl = (url) => {
     }
 
     const afterUpload = segments.slice(uploadIndex + 1);
-    const versionIndex = afterUpload.findIndex((segment) => /^v\d+$/.test(segment));
+    const versionIndex = afterUpload.findIndex((segment) =>
+      /^v\d+$/.test(segment),
+    );
 
     if (versionIndex === -1) {
       return null;
@@ -102,7 +104,10 @@ export const extractPublicIdFromCloudinaryUrl = (url) => {
     }
 
     const lastSegment = publicIdParts[publicIdParts.length - 1];
-    publicIdParts[publicIdParts.length - 1] = lastSegment.replace(/\.[^.]+$/, "");
+    publicIdParts[publicIdParts.length - 1] = lastSegment.replace(
+      /\.[^.]+$/,
+      "",
+    );
 
     return decodeURIComponent(publicIdParts.join("/"));
   } catch {
@@ -153,7 +158,10 @@ export const buildCloudinaryThumbnailUrl = (
   });
 };
 
-const buildCloudinaryMediaWithFallback = ({ videoPublicId, thumbnailPublicId }) => {
+const buildCloudinaryMediaWithFallback = ({
+  videoPublicId,
+  thumbnailPublicId,
+}) => {
   try {
     return {
       videoUrl: videoPublicId ? buildCloudinaryVideoUrl(videoPublicId) : null,
@@ -179,7 +187,9 @@ const validateCloudinaryAssetExists = async (publicId, resourceType) => {
   } catch (error) {
     const isNotFound =
       error?.http_code === 404 ||
-      String(error?.message || "").toLowerCase().includes("not found");
+      String(error?.message || "")
+        .toLowerCase()
+        .includes("not found");
 
     if (isNotFound) {
       throw new Error(
@@ -200,7 +210,8 @@ export const resolveProjectMedia = async ({
 }) => {
   const normalizedVideoPublicId = normalizeNullableString(videoPublicId);
   const normalizedVideoUrl = normalizeNullableString(videoUrl);
-  const normalizedThumbnailPublicId = normalizeNullableString(thumbnailPublicId);
+  const normalizedThumbnailPublicId =
+    normalizeNullableString(thumbnailPublicId);
   const normalizedThumbnailUrl = normalizeNullableString(thumbnailUrl);
 
   if (
@@ -236,10 +247,14 @@ export const resolveProjectMedia = async ({
   validatePublicIdOwnership(nextVideoPublicId, { projectId });
 
   let nextThumbnailPublicId =
-    normalizedThumbnailPublicId !== undefined ? normalizedThumbnailPublicId : null;
+    normalizedThumbnailPublicId !== undefined
+      ? normalizedThumbnailPublicId
+      : null;
 
   if (!nextThumbnailPublicId && normalizedThumbnailUrl) {
-    nextThumbnailPublicId = extractPublicIdFromCloudinaryUrl(normalizedThumbnailUrl);
+    nextThumbnailPublicId = extractPublicIdFromCloudinaryUrl(
+      normalizedThumbnailUrl,
+    );
     if (!nextThumbnailPublicId) {
       throw new Error(
         "Invalid thumbnailUrl. Provide a valid Cloudinary delivery URL or a thumbnail public ID.",
