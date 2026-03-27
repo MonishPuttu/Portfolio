@@ -54,9 +54,6 @@ if (!isProduction) {
 // Rate limiting
 app.use("/api/", apiLimiter);
 
-// Serve uploaded files
-app.use("/uploads", express.static("uploads"));
-
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);

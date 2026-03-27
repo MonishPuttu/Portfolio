@@ -8,7 +8,9 @@ const seedProjects = [
     company: "AniTalk",
     description:
       "A voice-based agentic platform that lets users interact with custom AI agents through natural voice conversations. Features a unique anime character mode for immersive voice chat, custom agent creation, context-aware dialogue, and payment integration.",
-    videoUrl: "/videos/anitalk.mp4",
+    cloudinaryVideoPublicId: null,
+    cloudinaryThumbnailPublicId: null,
+    videoUrl: null,
     thumbnailUrl: null,
     projectUrl: "https://ani-talk-ai.vercel.app/",
     color: "#8B5CF6",
@@ -29,7 +31,9 @@ const seedProjects = [
     company: "Renz",
     description:
       "An interactive full-stack playground that lets you build a React frontend and Node.js backend and preview the output instantly in the browser. Iterate on frontend and backend code together with live results.",
-    videoUrl: "/videos/renz.mp4",
+    cloudinaryVideoPublicId: null,
+    cloudinaryThumbnailPublicId: null,
+    videoUrl: null,
     thumbnailUrl: null,
     projectUrl: "https://renzai.vercel.app/",
     color: "#10B981",
@@ -42,7 +46,9 @@ const seedProjects = [
     company: "InternHub",
     description:
       "A platform for managing internship applications, tracking progress, and connecting students with opportunities.",
-    videoUrl: "/videos/internhub.mp4",
+    cloudinaryVideoPublicId: null,
+    cloudinaryThumbnailPublicId: null,
+    videoUrl: null,
     thumbnailUrl: null,
     projectUrl: "https://github.com/MonishPuttu/InternHub",
     color: "#F59E0B",
@@ -56,6 +62,8 @@ const seedProjects = [
     company: "TrackTots",
     description:
       "A React Native attendance tracking app that helps parents mark and monitor their child's classes with intuitive mobile-first experience.",
+    cloudinaryVideoPublicId: null,
+    cloudinaryThumbnailPublicId: null,
     videoUrl: null,
     thumbnailUrl: null,
     projectUrl: "https://github.com/MonishPuttu/TrackTots",

@@ -1,5 +1,33 @@
 import { body, param, query, validationResult } from "express-validator";
 
+const cloudinaryRootFolder = (
+  process.env.CLOUDINARY_ALLOWED_ROOT ||
+  process.env.CLOUDINARY_UPLOAD_FOLDER?.split("/")[0] ||
+  "portfolio"
+)
+  .replace(/^\/+|\/+$/g, "")
+  .trim();
+
+const isCloudinaryHost = (urlString) => {
+  try {
+    const parsed = new URL(urlString);
+    return (
+      parsed.hostname === "res.cloudinary.com" ||
+      parsed.hostname.endsWith(".res.cloudinary.com")
+    );
+  } catch {
+    return false;
+  }
+};
+
+const isAllowedCloudinaryPublicId = (publicId) => {
+  if (!publicId) return true;
+  const normalized = String(publicId).trim();
+  if (!normalized) return true;
+
+  return normalized.startsWith(`${cloudinaryRootFolder}/`);
+};
+
 /**
  * Handle validation errors — returns 400 with details.
  */
@@ -74,12 +102,52 @@ export const validateProject = [
     .isLength({ max: 255 })
     .withMessage("Company must be under 255 characters"),
   body("description").trim().notEmpty().withMessage("Description is required"),
+  body("videoPublicId")
+    .optional({ values: "null" })
+    .isLength({ max: 255 })
+    .withMessage("videoPublicId must be under 255 characters")
+    .custom((value) => isAllowedCloudinaryPublicId(value))
+    .withMessage(
+      `videoPublicId must start with ${cloudinaryRootFolder}/`,
+    ),
+  body("cloudinaryVideoPublicId")
+    .optional({ values: "null" })
+    .isLength({ max: 255 })
+    .withMessage("cloudinaryVideoPublicId must be under 255 characters")
+    .custom((value) => isAllowedCloudinaryPublicId(value))
+    .withMessage(
+      `cloudinaryVideoPublicId must start with ${cloudinaryRootFolder}/`,
+    ),
+  body("thumbnailPublicId")
+    .optional({ values: "null" })
+    .isLength({ max: 255 })
+    .withMessage("thumbnailPublicId must be under 255 characters")
+    .custom((value) => isAllowedCloudinaryPublicId(value))
+    .withMessage(
+      `thumbnailPublicId must start with ${cloudinaryRootFolder}/`,
+    ),
+  body("cloudinaryThumbnailPublicId")
+    .optional({ values: "null" })
+    .isLength({ max: 255 })
+    .withMessage("cloudinaryThumbnailPublicId must be under 255 characters")
+    .custom((value) => isAllowedCloudinaryPublicId(value))
+    .withMessage(
+      `cloudinaryThumbnailPublicId must start with ${cloudinaryRootFolder}/`,
+    ),
   body("videoUrl")
     .optional({ values: "null" })
+    .isURL()
+    .withMessage("Video URL must be a valid URL")
+    .custom((value) => !value || isCloudinaryHost(value))
+    .withMessage("Video URL must be a Cloudinary URL")
     .isLength({ max: 500 })
     .withMessage("Video URL must be under 500 characters"),
   body("thumbnailUrl")
     .optional({ values: "null" })
+    .isURL()
+    .withMessage("Thumbnail URL must be a valid URL")
+    .custom((value) => !value || isCloudinaryHost(value))
+    .withMessage("Thumbnail URL must be a Cloudinary URL")
     .isLength({ max: 500 })
     .withMessage("Thumbnail URL must be under 500 characters"),
   body("projectUrl")

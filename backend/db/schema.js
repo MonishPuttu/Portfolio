@@ -15,6 +15,12 @@ export const projects = pgTable("projects", {
   title: varchar("title", { length: 255 }).notNull(),
   company: varchar("company", { length: 255 }).notNull(),
   description: text("description").notNull(),
+  cloudinaryVideoPublicId: varchar("cloudinary_video_public_id", {
+    length: 255,
+  }),
+  cloudinaryThumbnailPublicId: varchar("cloudinary_thumbnail_public_id", {
+    length: 255,
+  }),
   videoUrl: varchar("video_url", { length: 500 }),
   thumbnailUrl: varchar("thumbnail_url", { length: 500 }),
   projectUrl: varchar("project_url", { length: 500 }),
