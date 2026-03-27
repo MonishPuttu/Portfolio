@@ -42,7 +42,7 @@ const About = () => {
       icon: Users,
       title: "Open Source",
       description:
-        "Active contributor to open source projects like Talawa by Palisadoes Foundation",
+        "Active contributor to open source projects including Talawa, Konflux, and Bowtie",
     },
     {
       icon: Zap,
@@ -117,10 +117,10 @@ const About = () => {
                   </p>
                   <p>
                     I’m also an active open source contributor — I’ve
-                    contributed to both the Hermeto project and
-                    PalisadoesFoundation’s Talawa project, with 480+ GitHub
-                    contributions in the last year. I strongly believe in
-                    learning by building and shipping.
+                    contributed to projects and organizations like Hermeto,
+                    Palisadoes Foundation’s Talawa, Konflux, and Bowtie, with
+                    480+ GitHub contributions in the last year. I strongly
+                    believe in learning by building and shipping.
                   </p>
                 </div>
               </motion.div>

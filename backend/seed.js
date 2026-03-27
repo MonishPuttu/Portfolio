@@ -2,7 +2,7 @@ import { db } from "./db/db.js";
 import { projects, achievements } from "./db/schema.js";
 
 const seedProjects = [
-  // ── Featured Projects (3) ──────────────────────────────
+  // ── Featured Projects (5) ──────────────────────────────
   {
     title: "AniTalk — Voice-Based Agentic AI Platform",
     company: "AniTalk",
@@ -44,6 +44,22 @@ const seedProjects = [
     technologies: ["Next.js", "TypeScript", "Node.js", "Express", "Vercel"],
   },
   {
+    title: "Drawify — Collaborative Drawing Platform",
+    company: "Drawify",
+    description:
+      "A collaborative drawing platform for creating and sharing sketches in real-time, with an intuitive canvas and smooth interaction workflows.",
+    cloudinaryVideoPublicId: "Drawify_y4pce0.mp4",
+    cloudinaryThumbnailPublicId: null,
+    videoUrl:
+      "https://res.cloudinary.com/dyypcsoow/video/upload/v1774601603/Drawify_y4pce0.mp4",
+    thumbnailUrl: null,
+    projectUrl: "https://github.com/MonishPuttu/DRAWIFY",
+    color: "#06B6D4",
+    animationCredit: null,
+    category: "Featured",
+    technologies: ["JavaScript", "Node.js", "WebSockets", "Canvas"],
+  },
+  {
     title: "InternHub — Internship Management Platform",
     company: "InternHub",
     description:
@@ -58,6 +74,22 @@ const seedProjects = [
     animationCredit: null,
     category: "Featured",
     technologies: ["JavaScript", "Node.js", "Express"],
+  },
+  {
+    title: "TrafficFlow — Traffic Flow Detection System",
+    company: "TrafficFlow",
+    description:
+      "A computer vision system for traffic flow detection and density analysis from video streams, built to provide clear and actionable traffic insights.",
+    cloudinaryVideoPublicId: "TrafficFlow_etigxb.mp4",
+    cloudinaryThumbnailPublicId: null,
+    videoUrl:
+      "https://res.cloudinary.com/dyypcsoow/video/upload/v1774617296/TrafficFlow_etigxb.mp4",
+    thumbnailUrl: null,
+    projectUrl: "https://github.com/MonishPuttu/Traffic_flow_detection",
+    color: "#EF4444",
+    animationCredit: null,
+    category: "Featured",
+    technologies: ["Python", "OpenCV", "Deep Learning", "Computer Vision"],
   },
   // ── Other Projects (hidden by default) ─────────────────
   {

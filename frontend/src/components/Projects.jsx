@@ -42,9 +42,19 @@ const Projects = () => {
   };
 
   // Show only featured projects
-  const featuredProjects = (projects || []).filter(
-    (p) => p.category === "Featured",
-  );
+  const featuredProjects = (projects || [])
+    .filter((p) => p.category === "Featured")
+    .sort((a, b) => {
+      const getPriority = (title = "") => {
+        if (title.includes("Drawify")) return 1;
+        if (title.includes("TrafficFlow")) return 2;
+        if (title.includes("InternHub")) return 3;
+        return 0;
+      };
+
+      const priorityDiff = getPriority(a.title) - getPriority(b.title);
+      return priorityDiff !== 0 ? priorityDiff : 0;
+    });
 
   return (
     <section id="projects" className="py-20 lg:py-28 px-6 lg:px-8 bg-white">
