@@ -8,65 +8,69 @@ import Footer from "./Footer";
 const About = () => {
   const skills = [
     {
-      name: "React / Next.js",
-      level: 92,
+      name: "Machine Learning / Data Science",
+      level: 87,
       color: "from-primary-500 to-primary-600",
     },
     {
-      name: "Node.js / Express",
+      name: "Backend / Systems",
       level: 90,
       color: "from-purple-500 to-purple-600",
     },
-    { name: "TypeScript", level: 88, color: "from-fuchsia-500 to-fuchsia-600" },
     {
-      name: "Docker / Kubernetes",
-      level: 80,
+      name: "DevOps / Cloud",
+      level: 88,
+      color: "from-fuchsia-500 to-fuchsia-600",
+    },
+    {
+      name: "Data Analysis / Feature Engineering",
+      level: 83,
       color: "from-violet-500 to-violet-600",
     },
   ];
 
   const values = [
     {
-      icon: Code2,
-      title: "Full-Stack",
+      icon: Zap,
+      title: "Applied AI",
       description:
-        "Building end-to-end applications from frontend to backend with modern stacks",
+        "Building intelligent systems that solve real world problems using data and machine learning",
     },
     {
       icon: Rocket,
-      title: "Ship Fast",
+      title: "Learn by Building",
       description:
-        "Rapid iteration and deployment — from idea to production quickly",
+        "Exploring machine learning concepts through hands on projects and real deployments",
+    },
+    {
+      icon: Code2,
+      title: "Scalable Systems",
+      description:
+        "Combining machine learning with strong backend systems to build production ready applications",
     },
     {
       icon: Users,
-      title: "Open Source",
+      title: "Open Source and Collaboration",
       description:
-        "Active contributor to open source projects including Talawa, Konflux, and Bowtie",
-    },
-    {
-      icon: Zap,
-      title: "Real-Time",
-      description:
-        "Experience building real-time systems with WebSockets and live collaboration",
+        "Contributing to impactful projects and learning through community driven development",
     },
   ];
 
   const tools = [
-    "React",
-    "Next.js",
-    "Node.js",
-    "TypeScript",
-    "PostgreSQL",
+    "Python",
+    "Scikit learn",
+    "TensorFlow",
     "Docker",
     "Kubernetes",
+    "Argo CD",
+    "Helm",
+    "Prometheus",
+    "Grafana",
+    "Node.js",
+    "React",
+    "Next.js",
+    "PostgreSQL",
     "AWS",
-    "Git",
-    "Tailwind CSS",
-    "Drizzle ORM",
-    "WebSockets",
-    "Vercel",
-    "Turborepo",
   ];
 
   return (
@@ -103,24 +107,29 @@ const About = () => {
                 transition={{ duration: 0.5, delay: 0.15 }}
               >
                 <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-5 font-display">
-                  Building Things That Matter
+                  About Me
                 </h3>
                 <div className="space-y-4 text-[15px] text-gray-600 leading-relaxed">
                   <p>
-                    I’m Monish Puttu, a final-year BE student with a strong
-                    passion for full-stack development. I specialize in building
-                    scalable applications using Node.js, React, and Next.js, and
-                    have hands-on experience with containerization and
-                    orchestration tools like Docker and Kubernetes. I’m also
-                    deeply interested in supply chain security and its evolving
-                    challenges.
+                    I am Monish Puttu, a final year BE student focused on
+                    building intelligent, data driven systems at the
+                    intersection of software engineering and machine learning. I
+                    have a strong foundation in full stack development using
+                    Node.js, React, and Next.js, which I use to design and
+                    deploy scalable applications, while actively expanding my
+                    expertise in machine learning, deep learning, and real time
+                    data systems with a focus on practical implementation and
+                    model deployment.
                   </p>
                   <p>
-                    I’m also an active open source contributor — I’ve
-                    contributed to projects and organizations like Hermeto,
-                    Palisadoes Foundation’s Talawa, Konflux, and Bowtie, with
-                    480+ GitHub contributions in the last year. I strongly
-                    believe in learning by building and shipping.
+                    I am particularly interested in applied machine learning,
+                    large language model based applications, and scalable AI
+                    systems. As an active open source contributor, I have worked
+                    with organizations like Hermeto, Palisadoes Foundation,
+                    Talawa, Konflux, and Bowtie, with 480 plus GitHub
+                    contributions in the past year. I believe in learning by
+                    building and shipping projects that combine intelligent
+                    models with strong engineering.
                   </p>
                 </div>
               </motion.div>
@@ -142,7 +151,7 @@ const About = () => {
                           {skill.name}
                         </span>
                         <span className="text-xs font-medium text-gray-400">
-                          {skill.level}%
+                          {`${skill.level}%`}
                         </span>
                       </div>
                       <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
