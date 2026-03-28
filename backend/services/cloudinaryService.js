@@ -3,9 +3,31 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME;
-const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;
-const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
+const parseCloudinaryUrl = (value) => {
+  if (!value) return null;
+
+  const match = String(value)
+    .trim()
+    .match(/^cloudinary:\/\/([^:]+):([^@]+)@([^/?#]+)$/i);
+
+  if (!match) return null;
+
+  const [, apiKey, apiSecret, cloudName] = match;
+
+  return {
+    apiKey: decodeURIComponent(apiKey),
+    apiSecret: decodeURIComponent(apiSecret),
+    cloudName: decodeURIComponent(cloudName),
+  };
+};
+
+const cloudinaryFromUrl = parseCloudinaryUrl(process.env.CLOUDINARY_URL);
+const cloudinaryCloudName =
+  cloudinaryFromUrl?.cloudName || process.env.CLOUDINARY_CLOUD_NAME;
+const cloudinaryApiKey =
+  cloudinaryFromUrl?.apiKey || process.env.CLOUDINARY_API_KEY;
+const cloudinaryApiSecret =
+  cloudinaryFromUrl?.apiSecret || process.env.CLOUDINARY_API_SECRET;
 const cloudinaryRootFolder = (
   process.env.CLOUDINARY_ALLOWED_ROOT ||
   process.env.CLOUDINARY_UPLOAD_FOLDER?.split("/")[0] ||
@@ -17,6 +39,16 @@ const shouldVerifyCloudinaryAsset =
   process.env.CLOUDINARY_VERIFY_ASSET_EXISTENCE !== "false";
 const fallbackThumbnailUrl =
   process.env.CLOUDINARY_FALLBACK_THUMBNAIL || "/fallback-thumbnail.png";
+
+if (
+  cloudinaryFromUrl &&
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  cloudinaryFromUrl.cloudName !== process.env.CLOUDINARY_CLOUD_NAME
+) {
+  console.warn(
+    "CLOUDINARY_URL cloud name does not match CLOUDINARY_CLOUD_NAME. Using CLOUDINARY_URL value.",
+  );
+}
 
 export const isCloudinaryConfigured = () =>
   Boolean(cloudinaryCloudName && cloudinaryApiKey && cloudinaryApiSecret);
