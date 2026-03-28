@@ -10,6 +10,10 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
   const videoRef = useRef(null);
   const [ref, isInView] = useIntersectionObserver({ threshold: 0.2 });
 
+  useEffect(() => {
+    setVideoLoaded(false);
+  }, [project?.video_url]);
+
   // Auto-play video when in view (lazy)
   useEffect(() => {
     if (!videoRef.current) return;
@@ -54,8 +58,17 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
         >
           {project.video_url ? (
             <>
-              {/* Lazy loading placeholder */}
-              {!videoLoaded && (
+              {project.thumbnail_url && (
+                <img
+                  src={project.thumbnail_url}
+                  alt={`${project.title} thumbnail`}
+                  loading="eager"
+                  className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out ${
+                    isHovered ? "scale-[1.03]" : "scale-100"
+                  } ${videoLoaded ? "opacity-0" : "opacity-100"}`}
+                />
+              )}
+              {!project.thumbnail_url && !videoLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
                   <div className="spinner" />
                 </div>
@@ -68,7 +81,7 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
                 playsInline
                 preload="metadata"
                 onLoadedData={() => setVideoLoaded(true)}
-                className={`w-full h-full object-cover transition-transform duration-700 ease-out ${
+                className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out ${
                   isHovered ? "scale-[1.03]" : "scale-100"
                 } ${videoLoaded ? "opacity-100" : "opacity-0"}`}
                 poster={project.thumbnail_url}
@@ -160,19 +173,36 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
         {/* Image/Video */}
         <div className="sm:w-3/5 relative aspect-[4/3] sm:aspect-auto overflow-hidden video-container">
           {project.video_url ? (
-            <video
-              ref={videoRef}
-              src={project.video_url}
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              onLoadedData={() => setVideoLoaded(true)}
-              className={`w-full h-full object-cover transition-transform duration-700 ${
-                isHovered ? "scale-105" : "scale-100"
-              }`}
-              poster={project.thumbnail_url}
-            />
+            <>
+              {project.thumbnail_url && (
+                <img
+                  src={project.thumbnail_url}
+                  alt={`${project.title} thumbnail`}
+                  loading="lazy"
+                  className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ${
+                    isHovered ? "scale-105" : "scale-100"
+                  } ${videoLoaded ? "opacity-0" : "opacity-100"}`}
+                />
+              )}
+              {!project.thumbnail_url && !videoLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                  <div className="spinner" />
+                </div>
+              )}
+              <video
+                ref={videoRef}
+                src={project.video_url}
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                onLoadedData={() => setVideoLoaded(true)}
+                className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ${
+                  isHovered ? "scale-105" : "scale-100"
+                } ${videoLoaded ? "opacity-100" : "opacity-0"}`}
+                poster={project.thumbnail_url}
+              />
+            </>
           ) : project.thumbnail_url ? (
             <img
               src={project.thumbnail_url}

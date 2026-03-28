@@ -6,6 +6,7 @@ import ProjectCard from "./ProjectCard";
 import ProjectModal from "./ProjectModal";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import API_URL from "../config/api";
+import { resolveLocalProjectThumbnail } from "../config/projectThumbnails";
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -21,7 +22,19 @@ const Projects = () => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(`${API_URL}/projects`);
-      setProjects(response.data.data);
+      const hydratedProjects = (response.data.data || []).map((project) => {
+        const localThumbnail = resolveLocalProjectThumbnail(project);
+        const fallbackThumbnail = project.thumbnail_url || project.thumbnailUrl;
+        const resolvedThumbnail = localThumbnail || fallbackThumbnail || null;
+
+        return {
+          ...project,
+          thumbnail_url: resolvedThumbnail,
+          thumbnailUrl: resolvedThumbnail,
+        };
+      });
+
+      setProjects(hydratedProjects);
     } catch (error) {
       console.error("Error fetching projects:", error);
       toast.error("Failed to load projects");
@@ -45,15 +58,26 @@ const Projects = () => {
   const featuredProjects = (projects || [])
     .filter((p) => p.category === "Featured")
     .sort((a, b) => {
+      const priorityMap = {
+        Renz: 1,
+        AniTalk: 2,
+        Drawify: 3,
+        TrafficFlow: 4,
+        InternHub: 5,
+      };
+
       const getPriority = (title = "") => {
-        if (title.includes("Drawify")) return 1;
-        if (title.includes("TrafficFlow")) return 2;
-        if (title.includes("InternHub")) return 3;
-        return 0;
+        const match = Object.keys(priorityMap).find((name) =>
+          title.includes(name),
+        );
+        return match ? priorityMap[match] : Number.MAX_SAFE_INTEGER;
       };
 
       const priorityDiff = getPriority(a.title) - getPriority(b.title);
-      return priorityDiff !== 0 ? priorityDiff : 0;
+      if (priorityDiff !== 0) return priorityDiff;
+
+      // Keep a deterministic order for same-priority items.
+      return a.title.localeCompare(b.title);
     });
 
   return (
