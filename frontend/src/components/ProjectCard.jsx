@@ -63,15 +63,11 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
                   src={project.thumbnail_url}
                   alt={`${project.title} thumbnail`}
                   loading="eager"
-                  className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out ${
+                  decoding="async"
+                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out ${
                     isHovered ? "scale-[1.03]" : "scale-100"
-                  } ${videoLoaded ? "opacity-0" : "opacity-100"}`}
+                  } ${videoLoaded ? "opacity-0 pointer-events-none" : "opacity-100"}`}
                 />
-              )}
-              {!project.thumbnail_url && !videoLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                  <div className="spinner" />
-                </div>
               )}
               <video
                 ref={videoRef}
@@ -81,7 +77,7 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
                 playsInline
                 preload="metadata"
                 onLoadedData={() => setVideoLoaded(true)}
-                className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out ${
+                className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out ${
                   isHovered ? "scale-[1.03]" : "scale-100"
                 } ${videoLoaded ? "opacity-100" : "opacity-0"}`}
                 poster={project.thumbnail_url}
@@ -178,16 +174,12 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
                 <img
                   src={project.thumbnail_url}
                   alt={`${project.title} thumbnail`}
-                  loading="lazy"
-                  className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ${
+                  loading="eager"
+                  decoding="async"
+                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
                     isHovered ? "scale-105" : "scale-100"
-                  } ${videoLoaded ? "opacity-0" : "opacity-100"}`}
+                  } ${videoLoaded ? "opacity-0 pointer-events-none" : "opacity-100"}`}
                 />
-              )}
-              {!project.thumbnail_url && !videoLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                  <div className="spinner" />
-                </div>
               )}
               <video
                 ref={videoRef}
@@ -197,7 +189,7 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
                 playsInline
                 preload="metadata"
                 onLoadedData={() => setVideoLoaded(true)}
-                className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ${
+                className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
                   isHovered ? "scale-105" : "scale-100"
                 } ${videoLoaded ? "opacity-100" : "opacity-0"}`}
                 poster={project.thumbnail_url}
@@ -207,7 +199,8 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
             <img
               src={project.thumbnail_url}
               alt={project.title}
-              loading="lazy"
+              loading="eager"
+              decoding="async"
               className={`w-full h-full object-cover transition-transform duration-700 ${
                 isHovered ? "scale-105" : "scale-100"
               }`}
