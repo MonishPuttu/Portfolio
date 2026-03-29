@@ -10,7 +10,7 @@ import { resolveLocalProjectThumbnail } from "../config/projectThumbnails";
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ref] = useIntersectionObserver({ threshold: 0.05 });
@@ -40,7 +40,7 @@ const Projects = () => {
       toast.error("Failed to load projects");
       // Fallback: use empty array, no crash
     } finally {
-      setLoading(false);
+      setHasLoaded(true);
     }
   };
 
@@ -85,26 +85,8 @@ const Projects = () => {
       <div className="max-w-7xl mx-auto">
         <div ref={ref} />
 
-        {/* Loading Skeleton */}
-        {loading && (
-          <div className="space-y-16">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-[16/9] bg-gray-100 rounded-2xl mb-6" />
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="h-3 bg-gray-100 rounded w-20 mb-3" />
-                    <div className="h-5 bg-gray-100 rounded w-64" />
-                  </div>
-                  <div className="w-12 h-12 bg-gray-100 rounded-full" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
         {/* Projects List - stacked layout like the reference */}
-        {!loading && (
+        {featuredProjects.length > 0 && (
           <div className="space-y-20">
             {featuredProjects.map((project, index) => (
               <ProjectCard
@@ -119,7 +101,7 @@ const Projects = () => {
         )}
 
         {/* Empty State */}
-        {!loading && featuredProjects.length === 0 && (
+        {hasLoaded && featuredProjects.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

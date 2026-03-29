@@ -1,37 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 
 const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const videoRef = useRef(null);
   const [ref, isInView] = useIntersectionObserver({ threshold: 0.2 });
-
-  useEffect(() => {
-    setVideoLoaded(false);
-  }, [project?.video_url]);
-
-  // Auto-play video when in view (lazy)
-  useEffect(() => {
-    if (!videoRef.current) return;
-    if (isInView) {
-      videoRef.current.play().catch(() => {});
-      setIsPlaying(true);
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    }
-  }, [isInView]);
-
-  // Adjust playback on hover
-  useEffect(() => {
-    if (videoRef.current && isPlaying) {
-      videoRef.current.playbackRate = isHovered ? 1 : 0.75;
-    }
-  }, [isHovered, isPlaying]);
 
   const handleClick = () => onOpenModal(project);
 
@@ -51,38 +25,21 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Video */}
+        {/* Thumbnail */}
         <div
           className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-gray-100 cursor-pointer video-container shadow-lg hover:shadow-2xl transition-shadow duration-500"
           onClick={handleClick}
         >
-          {project.video_url ? (
-            <>
-              {project.thumbnail_url && (
-                <img
-                  src={project.thumbnail_url}
-                  alt={`${project.title} thumbnail`}
-                  loading="eager"
-                  decoding="async"
-                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out ${
-                    isHovered ? "scale-[1.03]" : "scale-100"
-                  } ${videoLoaded ? "opacity-0 pointer-events-none" : "opacity-100"}`}
-                />
-              )}
-              <video
-                ref={videoRef}
-                src={project.video_url}
-                loop
-                muted
-                playsInline
-                preload="metadata"
-                onLoadedData={() => setVideoLoaded(true)}
-                className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out ${
-                  isHovered ? "scale-[1.03]" : "scale-100"
-                } ${videoLoaded ? "opacity-100" : "opacity-0"}`}
-                poster={project.thumbnail_url}
-              />
-            </>
+          {project.thumbnail_url ? (
+            <img
+              src={project.thumbnail_url}
+              alt={`${project.title} thumbnail`}
+              loading="eager"
+              decoding="async"
+              className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out ${
+                isHovered ? "scale-[1.03]" : "scale-100"
+              }`}
+            />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
               <div className="text-center">
@@ -168,34 +125,7 @@ const ProjectCard = ({ project, index, onOpenModal, layout = "stacked" }) => {
 
         {/* Image/Video */}
         <div className="sm:w-3/5 relative aspect-[4/3] sm:aspect-auto overflow-hidden video-container">
-          {project.video_url ? (
-            <>
-              {project.thumbnail_url && (
-                <img
-                  src={project.thumbnail_url}
-                  alt={`${project.title} thumbnail`}
-                  loading="eager"
-                  decoding="async"
-                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
-                    isHovered ? "scale-105" : "scale-100"
-                  } ${videoLoaded ? "opacity-0 pointer-events-none" : "opacity-100"}`}
-                />
-              )}
-              <video
-                ref={videoRef}
-                src={project.video_url}
-                loop
-                muted
-                playsInline
-                preload="metadata"
-                onLoadedData={() => setVideoLoaded(true)}
-                className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
-                  isHovered ? "scale-105" : "scale-100"
-                } ${videoLoaded ? "opacity-100" : "opacity-0"}`}
-                poster={project.thumbnail_url}
-              />
-            </>
-          ) : project.thumbnail_url ? (
+          {project.thumbnail_url ? (
             <img
               src={project.thumbnail_url}
               alt={project.title}
