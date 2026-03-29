@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -13,6 +13,7 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
   const { trackProject } = useAnalytics();
   const [iframeLoading, setIframeLoading] = useState(true);
   const [showIframe, setShowIframe] = useState(false);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     if (isOpen && project) {
@@ -38,6 +39,25 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
     if (isOpen) window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (!isOpen || !project?.video_url || project?.project_url) return;
+
+    const playTimer = setTimeout(() => {
+      const video = videoRef.current;
+      if (!video) return;
+
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+          video.muted = true;
+          video.play().catch(() => {});
+        });
+      }
+    }, 100);
+
+    return () => clearTimeout(playTimer);
+  }, [isOpen, project]);
 
   if (!project) return null;
 
@@ -188,9 +208,12 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                         </h3>
                         <div className="aspect-video rounded-xl overflow-hidden bg-gray-900">
                           <video
+                            ref={videoRef}
                             src={project.video_url}
                             controls
+                            autoPlay
                             loop
+                            playsInline
                             className="w-full h-full"
                             poster={project.thumbnail_url}
                           />
