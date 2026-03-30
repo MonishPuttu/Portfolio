@@ -9,7 +9,7 @@ const Navbar = () => {
   const [activeSection, setActiveSection] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const isHome = location.pathname === "/";
+  const isProjectsPage = location.pathname === "/projects";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -19,7 +19,7 @@ const Navbar = () => {
 
   // Detect active section on home page
   useEffect(() => {
-    if (!isHome) {
+    if (!isProjectsPage) {
       setActiveSection("");
       return;
     }
@@ -39,7 +39,7 @@ const Navbar = () => {
     });
 
     return () => observer.disconnect();
-  }, [isHome]);
+  }, [isProjectsPage]);
 
   const handleNav = (id) => {
     setMobileOpen(false);
@@ -64,17 +64,17 @@ const Navbar = () => {
       return;
     }
     if (id === "about") {
-      if (location.pathname !== "/about") {
-        navigate("/about");
+      if (location.pathname !== "/" && location.pathname !== "/about") {
+        navigate("/");
         setTimeout(() => replayScrollSequence("about-content"), 80);
       } else {
         replayScrollSequence("about-content");
       }
       return;
     }
-    if (!isHome) {
-      navigate("/");
-      // Wait for the home page to render, then scroll
+    if (!isProjectsPage) {
+      navigate("/projects");
+      // Wait for the projects page to render, then scroll
       setTimeout(() => replayScrollSequence(id), 80);
     } else {
       replayScrollSequence(id);
@@ -82,22 +82,23 @@ const Navbar = () => {
   };
 
   const handleLogoClick = () => {
-    if (!isHome) {
+    if (location.pathname !== "/") {
       navigate("/");
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const navItems = [
-    { name: "Projects", id: "projects" },
-    { name: "Achievements", id: "achievements" },
     { name: "About", id: "about" },
+    { name: "Achievements", id: "achievements" },
+    { name: "Projects", id: "projects" },
   ];
 
   const isActive = (id) => {
     if (id === "achievements") return location.pathname === "/achievements";
-    if (id === "about") return location.pathname === "/about";
-    return isHome && activeSection === id;
+    if (id === "about")
+      return location.pathname === "/" || location.pathname === "/about";
+    return isProjectsPage && activeSection === id;
   };
 
   return (

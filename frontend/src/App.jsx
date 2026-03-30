@@ -12,7 +12,7 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
-/* ── Home page (main scrollable) ─────────────────────── */
+/* ── Projects page (main scrollable) ─────────────────── */
 const HomePage = () => (
   <>
     <Navbar />
@@ -46,7 +46,8 @@ function App() {
           >
             <main>
               <Routes>
-                <Route path="/" element={<HomePage />} />
+                <Route path="/" element={<About />} />
+                <Route path="/projects" element={<HomePage />} />
                 <Route path="/achievements" element={<Achievements />} />
                 <Route path="/about" element={<About />} />
               </Routes>

@@ -6,7 +6,6 @@ import { Github, Linkedin, ExternalLink } from "lucide-react";
 const Footer = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const isHome = location.pathname === "/";
 
   const socialLinks = [
     { name: "GitHub", icon: Github, url: "https://github.com/MonishPuttu" },
@@ -26,33 +25,29 @@ const Footer = () => {
   ];
 
   const pageLinks = [
-    { name: "Projects", id: "projects", route: false },
+    { name: "About", id: "about-content", route: true, path: "/" },
     {
       name: "Achievements",
       id: "achievements",
       route: true,
       path: "/achievements",
     },
-    { name: "About", id: "about", route: true, path: "/about" },
+    { name: "Projects", id: "projects", route: true, path: "/projects" },
   ];
 
   const handlePageNav = (link) => {
     if (link.route) {
       navigate(link.path);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (link.id) {
+        setTimeout(() => {
+          document
+            .getElementById(link.id)
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
       return;
-    }
-    if (!isHome) {
-      navigate("/");
-      setTimeout(() => {
-        document
-          .getElementById(link.id)
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
-    } else {
-      document
-        .getElementById(link.id)
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
