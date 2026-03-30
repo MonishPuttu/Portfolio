@@ -12,7 +12,7 @@ import {
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-const Achievements = () => {
+const Achievements = ({ embedded = false }) => {
   const workExperience = [
     {
       role: "AI & Data Analytics Intern",
@@ -26,8 +26,8 @@ const Achievements = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
+    <div className={embedded ? "bg-white" : "min-h-screen bg-white"}>
+      {!embedded && <Navbar />}
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-10 md:pt-40 md:pb-16 overflow-hidden bg-white">
@@ -51,7 +51,7 @@ const Achievements = () => {
       {/* Work Experience Timeline */}
       <section
         id="achievements-content"
-        className="px-6 lg:px-8 pb-8 scroll-mt-24"
+        className={`px-6 lg:px-8 pb-8 ${embedded ? "scroll-mt-28" : "scroll-mt-24"}`}
       >
         <div className="max-w-7xl mx-auto">
           <motion.h2
@@ -431,7 +431,7 @@ const Achievements = () => {
         </div>
       </section>
 
-      <Footer />
+      {!embedded && <Footer />}
     </div>
   );
 };

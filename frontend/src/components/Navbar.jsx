@@ -9,7 +9,9 @@ const Navbar = () => {
   const [activeSection, setActiveSection] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const isProjectsPage = location.pathname === "/projects";
+  const isPortfolioPage = ["/", "/about", "/achievements", "/projects"].includes(
+    location.pathname,
+  );
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -19,11 +21,11 @@ const Navbar = () => {
 
   // Detect active section on home page
   useEffect(() => {
-    if (!isProjectsPage) {
+    if (!isPortfolioPage) {
       setActiveSection("");
       return;
     }
-    const sections = ["projects"];
+    const sections = ["about-content", "achievements-content", "projects"];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -39,10 +41,19 @@ const Navbar = () => {
     });
 
     return () => observer.disconnect();
-  }, [isProjectsPage]);
+  }, [isPortfolioPage]);
 
   const handleNav = (id) => {
     setMobileOpen(false);
+
+    const targetSectionMap = {
+      about: "about-content",
+      achievements: "achievements-content",
+      projects: "projects",
+    };
+
+    const targetId = targetSectionMap[id];
+    if (!targetId) return;
 
     const replayScrollSequence = (targetId) => {
       window.scrollTo({ top: 0, behavior: "auto" });
@@ -54,30 +65,12 @@ const Navbar = () => {
       }, 850);
     };
 
-    if (id === "achievements") {
-      if (location.pathname !== "/achievements") {
-        navigate("/achievements");
-        setTimeout(() => replayScrollSequence("achievements-content"), 80);
-      } else {
-        replayScrollSequence("achievements-content");
-      }
-      return;
-    }
-    if (id === "about") {
-      if (location.pathname !== "/" && location.pathname !== "/about") {
-        navigate("/");
-        setTimeout(() => replayScrollSequence("about-content"), 80);
-      } else {
-        replayScrollSequence("about-content");
-      }
-      return;
-    }
-    if (!isProjectsPage) {
-      navigate("/projects");
-      // Wait for the projects page to render, then scroll
-      setTimeout(() => replayScrollSequence(id), 80);
+    if (!isPortfolioPage) {
+      navigate("/");
+      // Wait for the main page to render, then scroll
+      setTimeout(() => replayScrollSequence(targetId), 80);
     } else {
-      replayScrollSequence(id);
+      replayScrollSequence(targetId);
     }
   };
 
@@ -95,10 +88,9 @@ const Navbar = () => {
   ];
 
   const isActive = (id) => {
-    if (id === "achievements") return location.pathname === "/achievements";
-    if (id === "about")
-      return location.pathname === "/" || location.pathname === "/about";
-    return isProjectsPage && activeSection === id;
+    if (id === "about") return activeSection === "about-content";
+    if (id === "achievements") return activeSection === "achievements-content";
+    return activeSection === "projects";
   };
 
   return (

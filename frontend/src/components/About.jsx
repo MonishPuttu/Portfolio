@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 import Contact from "./Contact";
 import Footer from "./Footer";
 
-const About = () => {
+const About = ({ embedded = false }) => {
   const skills = [
     {
       name: "Machine Learning / Data Science",
@@ -74,8 +74,8 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
+    <div className={embedded ? "bg-white" : "min-h-screen bg-white"}>
+      {!embedded && <Navbar />}
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-10 md:pt-40 md:pb-16 overflow-hidden bg-white">
@@ -95,7 +95,7 @@ const About = () => {
       {/* Content */}
       <section
         id="about-content"
-        className="py-10 lg:py-16 px-6 lg:px-8 bg-white scroll-mt-24"
+        className={`py-10 lg:py-16 px-6 lg:px-8 bg-white ${embedded ? "scroll-mt-28" : "scroll-mt-24"}`}
       >
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20">
@@ -236,8 +236,8 @@ const About = () => {
         </div>
       </section>
 
-      <Contact />
-      <Footer />
+      {!embedded && <Contact />}
+      {!embedded && <Footer />}
     </div>
   );
 };

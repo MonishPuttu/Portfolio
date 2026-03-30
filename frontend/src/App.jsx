@@ -12,12 +12,15 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
-/* ── Projects page (main scrollable) ─────────────────── */
+/* ── Main portfolio page (single-scroll layout) ──────── */
 const HomePage = () => (
   <>
     <Navbar />
+    <About embedded />
+    <Achievements embedded />
     <Hero />
     <Projects />
+    <Contact />
     <Footer />
   </>
 );
@@ -46,10 +49,10 @@ function App() {
           >
             <main>
               <Routes>
-                <Route path="/" element={<About />} />
+                <Route path="/" element={<HomePage />} />
                 <Route path="/projects" element={<HomePage />} />
-                <Route path="/achievements" element={<Achievements />} />
-                <Route path="/about" element={<About />} />
+                <Route path="/achievements" element={<HomePage />} />
+                <Route path="/about" element={<HomePage />} />
               </Routes>
             </main>
           </motion.div>
