@@ -9,9 +9,12 @@ const Navbar = () => {
   const [activeSection, setActiveSection] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const isPortfolioPage = ["/", "/about", "/achievements", "/projects"].includes(
-    location.pathname,
-  );
+  const isPortfolioPage = [
+    "/",
+    "/about",
+    "/achievements",
+    "/projects",
+  ].includes(location.pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -19,28 +22,37 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Detect active section on home page
+  // Detect active section on the single-scroll portfolio page
   useEffect(() => {
     if (!isPortfolioPage) {
       setActiveSection("");
       return;
     }
     const sections = ["about-content", "achievements-content", "projects"];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
-        });
-      },
-      { threshold: 0.3, rootMargin: "-80px 0px 0px 0px" },
-    );
+    const navOffset = 120;
 
-    sections.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
+    const updateActiveSection = () => {
+      const scrollMarker = window.scrollY + navOffset;
+      let nextActive = sections[0];
 
-    return () => observer.disconnect();
+      sections.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollMarker) {
+          nextActive = id;
+        }
+      });
+
+      setActiveSection(nextActive);
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    window.addEventListener("resize", updateActiveSection);
+
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection);
+      window.removeEventListener("resize", updateActiveSection);
+    };
   }, [isPortfolioPage]);
 
   const handleNav = (id) => {
