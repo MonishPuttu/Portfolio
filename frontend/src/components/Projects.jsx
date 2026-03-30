@@ -6,7 +6,7 @@ import ProjectCard from "./ProjectCard";
 import ProjectModal from "./ProjectModal";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import API_URL from "../config/api";
-import { resolveLocalProjectThumbnail } from "../config/projectThumbnails";
+import { preloadProjectThumbnails } from "../config/projectThumbnails";
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -22,17 +22,9 @@ const Projects = () => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(`${API_URL}/projects`);
-      const hydratedProjects = (response.data.data || []).map((project) => {
-        const localThumbnail = resolveLocalProjectThumbnail(project);
-        const fallbackThumbnail = project.thumbnail_url || project.thumbnailUrl;
-        const resolvedThumbnail = localThumbnail || fallbackThumbnail || null;
-
-        return {
-          ...project,
-          thumbnail_url: resolvedThumbnail,
-          thumbnailUrl: resolvedThumbnail,
-        };
-      });
+      const hydratedProjects = await preloadProjectThumbnails(
+        response.data.data || [],
+      );
 
       setProjects(hydratedProjects);
     } catch (error) {
