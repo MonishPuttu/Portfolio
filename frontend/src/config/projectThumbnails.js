@@ -73,7 +73,9 @@ export const preloadProjectThumbnails = async (projects = []) => {
 };
 
 export const preloadKnownProjectThumbnails = async () => {
-  await Promise.all(getKnownProjectThumbnails().map((url) => preloadImage(url)));
+  await Promise.all(
+    getKnownProjectThumbnails().map((url) => preloadImage(url)),
+  );
 };
 
 export default FEATURED_THUMBNAIL_MAP;
