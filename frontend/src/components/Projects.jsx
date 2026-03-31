@@ -6,9 +6,14 @@ import ProjectCard from "./ProjectCard";
 import ProjectModal from "./ProjectModal";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import API_URL from "../config/api";
-import { preloadProjectThumbnails } from "../config/projectThumbnails";
+import {
+  hydrateProjectsWithThumbnails,
+  preloadKnownProjectThumbnails,
+  preloadProjectThumbnails,
+} from "../config/projectThumbnails";
 
 const Projects = () => {
+  const [rawProjects, setRawProjects] = useState([]);
   const [projects, setProjects] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -16,24 +21,34 @@ const Projects = () => {
   const [ref] = useIntersectionObserver({ threshold: 0.05 });
 
   useEffect(() => {
+    preloadKnownProjectThumbnails();
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    hydrateAndPreloadProjectThumbnails(rawProjects);
+  }, [rawProjects]);
 
   const fetchProjects = async () => {
     try {
       const response = await axios.get(`${API_URL}/projects`);
-      const hydratedProjects = await preloadProjectThumbnails(
-        response.data.data || [],
-      );
-
-      setProjects(hydratedProjects);
+      setRawProjects(response.data.data || []);
     } catch (error) {
       console.error("Error fetching projects:", error);
       toast.error("Failed to load projects");
       // Fallback: use empty array, no crash
+      setRawProjects([]);
     } finally {
       setHasLoaded(true);
     }
+  };
+
+  const hydrateAndPreloadProjectThumbnails = async (projectList = []) => {
+    const hydratedProjects = hydrateProjectsWithThumbnails(projectList);
+
+    setProjects(hydratedProjects);
+
+    await preloadProjectThumbnails(projectList);
   };
 
   const handleOpenModal = (project) => {
