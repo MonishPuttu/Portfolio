@@ -6,14 +6,33 @@ import ProjectCard from "./ProjectCard";
 import ProjectModal from "./ProjectModal";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import API_URL from "../config/api";
-import {
-  hydrateProjectsWithThumbnails,
-  preloadKnownProjectThumbnails,
-  preloadProjectThumbnails,
-} from "../config/projectThumbnails";
+
+const LOCAL_THUMBNAILS = {
+  anitalk: "/thumbnails/anitalk.png",
+  renz: "/thumbnails/renz.png",
+  drawify: "/thumbnails/drawify.png",
+  internhub: "/thumbnails/internhub.png",
+  trafficflow: "/thumbnails/trafficflow.png",
+};
+const DEFAULT_THUMB = "/thumbnails/default.svg";
+
+const getLocalThumb = (project) => {
+  if (!project) return null;
+  const title = (project.title || "").toLowerCase();
+  const company = (project.company || "").toLowerCase();
+  const key = Object.keys(LOCAL_THUMBNAILS).find(
+    (k) => title.includes(k) || company.includes(k),
+  );
+  return key ? LOCAL_THUMBNAILS[key] : null;
+};
+
+const isValidImageUrl = (url) => {
+  if (!url || !url.startsWith("http")) return false;
+  if (url.includes(".mp4")) return false;
+  return true;
+};
 
 const Projects = () => {
-  const [rawProjects, setRawProjects] = useState([]);
   const [projects, setProjects] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -21,34 +40,51 @@ const Projects = () => {
   const [ref] = useIntersectionObserver({ threshold: 0.05 });
 
   useEffect(() => {
-    preloadKnownProjectThumbnails();
+    Object.values(LOCAL_THUMBNAILS).forEach((src) => {
+      new Image().src = src;
+    });
     fetchProjects();
   }, []);
-
-  useEffect(() => {
-    hydrateAndPreloadProjectThumbnails(rawProjects);
-  }, [rawProjects]);
 
   const fetchProjects = async () => {
     try {
       const response = await axios.get(`${API_URL}/projects`);
-      setRawProjects(response.data.data || []);
+      const rawProjects = response.data.data || [];
+
+      const withLocalThumbnails = rawProjects.map((p) => {
+        const thumb = getLocalThumb(p) || DEFAULT_THUMB;
+        return { ...p, thumbnail_url: thumb, thumbnailUrl: thumb };
+      });
+      setProjects(withLocalThumbnails);
+      setHasLoaded(true);
+
+      rawProjects.forEach((rawProject) => {
+        const cloudinaryThumb =
+          rawProject.thumbnailUrl || rawProject.thumbnail_url;
+
+        if (!isValidImageUrl(cloudinaryThumb)) return;
+
+        const img = new Image();
+        img.onload = () => {
+          setProjects((prev) =>
+            prev.map((p) =>
+              p.id === rawProject.id
+                ? {
+                    ...p,
+                    thumbnail_url: cloudinaryThumb,
+                    thumbnailUrl: cloudinaryThumb,
+                  }
+                : p,
+            ),
+          );
+        };
+        img.src = cloudinaryThumb;
+      });
     } catch (error) {
       console.error("Error fetching projects:", error);
       toast.error("Failed to load projects");
-      // Fallback: use empty array, no crash
-      setRawProjects([]);
-    } finally {
       setHasLoaded(true);
     }
-  };
-
-  const hydrateAndPreloadProjectThumbnails = async (projectList = []) => {
-    const hydratedProjects = hydrateProjectsWithThumbnails(projectList);
-
-    setProjects(hydratedProjects);
-
-    await preloadProjectThumbnails(projectList);
   };
 
   const handleOpenModal = (project) => {
@@ -61,7 +97,6 @@ const Projects = () => {
     setTimeout(() => setSelectedProject(null), 300);
   };
 
-  // Show only featured projects
   const featuredProjects = (projects || [])
     .filter((p) => p.category === "Featured")
     .sort((a, b) => {
@@ -72,19 +107,14 @@ const Projects = () => {
         TrafficFlow: 4,
         InternHub: 5,
       };
-
       const getPriority = (title = "") => {
         const match = Object.keys(priorityMap).find((name) =>
           title.includes(name),
         );
         return match ? priorityMap[match] : Number.MAX_SAFE_INTEGER;
       };
-
-      const priorityDiff = getPriority(a.title) - getPriority(b.title);
-      if (priorityDiff !== 0) return priorityDiff;
-
-      // Keep a deterministic order for same-priority items.
-      return a.title.localeCompare(b.title);
+      const diff = getPriority(a.title) - getPriority(b.title);
+      return diff !== 0 ? diff : a.title.localeCompare(b.title);
     });
 
   return (
@@ -92,7 +122,6 @@ const Projects = () => {
       <div className="max-w-7xl mx-auto">
         <div ref={ref} />
 
-        {/* Projects List - stacked layout like the reference */}
         {featuredProjects.length > 0 && (
           <div className="space-y-20">
             {featuredProjects.map((project, index) => (
@@ -107,7 +136,6 @@ const Projects = () => {
           </div>
         )}
 
-        {/* Empty State */}
         {hasLoaded && featuredProjects.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -124,7 +152,6 @@ const Projects = () => {
         )}
       </div>
 
-      {/* Modal */}
       <ProjectModal
         project={selectedProject}
         isOpen={isModalOpen}
