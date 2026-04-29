@@ -1,173 +1,58 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Github, Linkedin, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Mail } from "lucide-react";
 
-const Footer = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+const SOCIALS = [
+  { icon: Github, href: "https://github.com/MonishPuttu", label: "GitHub" },
+  {
+    icon: Linkedin,
+    href: "https://linkedin.com/in/monish-k-543236251",
+    label: "LinkedIn",
+  },
+  { icon: Mail, href: "mailto:monishputtu1780@gmail.com", label: "Email" },
+];
 
-  const socialLinks = [
-    { name: "GitHub", icon: Github, url: "https://github.com/MonishPuttu" },
-    {
-      name: "LinkedIn",
-      icon: Linkedin,
-      url: "https://www.linkedin.com/in/monish-k-543236251/",
-    },
-  ];
-
-  const contactLinks = [
-    {
-      name: "Email",
-      icon: ExternalLink,
-      url: "mailto:monishputtu1780@gmail.com",
-    },
-  ];
-
-  const pageLinks = [
-    { name: "About", id: "about-content", route: true, path: "/" },
-    {
-      name: "Achievements",
-      id: "achievements",
-      route: true,
-      path: "/achievements",
-    },
-    { name: "Projects", id: "projects", route: true, path: "/projects" },
-  ];
-
-  const handlePageNav = (link) => {
-    if (link.route) {
-      navigate(link.path);
-      if (link.id) {
-        setTimeout(() => {
-          document
-            .getElementById(link.id)
-            ?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 100);
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-      return;
-    }
-  };
-
-  return (
-    <footer className="relative bg-gradient-to-b from-[#1a1f1a] to-[#111411] text-white overflow-hidden">
-      {/* Large scrolling text */}
-      <div className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none select-none">
-        <div className="animate-marquee whitespace-nowrap">
-          <span className="inline-block text-[10rem] md:text-[14rem] lg:text-[18rem] font-black tracking-tighter text-primary-500/10 leading-none">
-            MONISH PUTTU&nbsp;&nbsp;MONISH PUTTU&nbsp;&nbsp;MONISH
-            PUTTU&nbsp;&nbsp;
+const Footer = () => (
+  <footer className="relative bg-gray-950 text-white overflow-hidden">
+    <div className="absolute inset-0 flex items-center overflow-hidden pointer-events-none select-none">
+      <div className="animate-marquee whitespace-nowrap">
+        {[...Array(4)].map((_, i) => (
+          <span
+            key={i}
+            className="inline-block text-[7rem] md:text-[10rem] font-black tracking-tighter text-white/[0.03] leading-none"
+          >
+            MONISH PUTTU&nbsp;&nbsp;
           </span>
-        </div>
+        ))}
+      </div>
+    </div>
+
+    <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-10 py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <span className="text-[13px] font-medium tracking-[0.06em] text-primary-400">
+        MONISH PUTTU
+      </span>
+
+      <div className="flex items-center gap-6">
+        {SOCIALS.map(({ icon: Icon, href, label }) => (
+          <motion.a
+            key={label}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={label}
+            whileHover={{ y: -2 }}
+            className="text-gray-500 hover:text-primary-400 transition-colors"
+          >
+            <Icon size={16} />
+          </motion.a>
+        ))}
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-14 lg:py-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-14">
-          {/* Brand */}
-          <motion.div
-            className="col-span-2 md:col-span-1"
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-xl font-bold mb-3 font-display">
-              <span className="text-primary-400">MONISH PUTTU</span>
-            </h3>
-            <p className="text-sm text-gray-400 leading-relaxed max-w-[200px]">
-              Building full-stack products with modern tech
-            </p>
-          </motion.div>
-
-          {/* Socials */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.05 }}
-            viewport={{ once: true }}
-          >
-            <h4 className="text-xs font-bold uppercase tracking-[0.15em] text-gray-400 mb-4">
-              Socials
-            </h4>
-            <ul className="space-y-2.5">
-              {socialLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <li key={link.name}>
-                    <motion.a
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-gray-300 hover:text-primary-400 transition-colors group"
-                      whileHover={{ x: 3 }}
-                    >
-                      <span>{link.name}</span>
-                      <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </motion.a>
-                  </li>
-                );
-              })}
-            </ul>
-          </motion.div>
-
-          {/* Contact */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            viewport={{ once: true }}
-          >
-            <h4 className="text-xs font-bold uppercase tracking-[0.15em] text-gray-400 mb-4">
-              Contact
-            </h4>
-            <ul className="space-y-2.5">
-              {contactLinks.map((link) => (
-                <li key={link.name}>
-                  <motion.a
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-gray-300 hover:text-primary-400 transition-colors group"
-                    whileHover={{ x: 3 }}
-                  >
-                    <span>{link.name}</span>
-                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </motion.a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Pages */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            viewport={{ once: true }}
-          >
-            <h4 className="text-xs font-bold uppercase tracking-[0.15em] text-gray-400 mb-4">
-              Pages
-            </h4>
-            <ul className="space-y-2.5">
-              {pageLinks.map((link) => (
-                <li key={link.name}>
-                  <motion.button
-                    onClick={() => handlePageNav(link)}
-                    className="text-sm text-gray-300 hover:text-primary-400 transition-colors"
-                    whileHover={{ x: 3 }}
-                  >
-                    {link.name}
-                  </motion.button>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        </div>
-      </div>
-    </footer>
-  );
-};
+      <span className="text-[11px] text-gray-600">
+        Built with React + Tailwind
+      </span>
+    </div>
+  </footer>
+);
 
 export default Footer;
