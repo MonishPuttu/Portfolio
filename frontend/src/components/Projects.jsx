@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -32,122 +32,286 @@ const isValidImageUrl = (url) => {
   return true;
 };
 
+const useTilt = (strength = 8) => {
+  const ref = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const onMove = (e) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const mx = e.clientX - (rect.left + rect.width / 2);
+    const my = e.clientY - (rect.top + rect.height / 2);
+    setTilt({
+      x: -(my / (rect.height / 2)) * strength,
+      y: (mx / (rect.width / 2)) * strength,
+    });
+  };
+
+  const onLeave = () => setTilt({ x: 0, y: 0 });
+
+  return { ref, tilt, onMove, onLeave };
+};
+
 const CardFull = ({ project, onOpen }) => {
   const [hovered, setHovered] = useState(false);
+  const { ref, tilt, onMove, onLeave } = useTilt(4);
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="relative rounded-2xl overflow-hidden border border-gray-100 cursor-pointer group"
-      style={{ aspectRatio: "16/7" }}
+      animate={{ rotateX: tilt.x, rotateY: tilt.y }}
+      style={{
+        transformStyle: "preserve-3d",
+        willChange: "transform",
+        borderRadius: "1rem",
+      }}
+      onMouseMove={onMove}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseLeave={() => {
+        onLeave();
+        setHovered(false);
+      }}
       onClick={() => onOpen(project)}
+      className="cursor-pointer"
     >
-      <img
-        src={project.thumbnail_url || DEFAULT_THUMB}
-        alt={project.title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-        onError={(e) => {
-          e.currentTarget.src = DEFAULT_THUMB;
+      <div
+        style={{
+          borderRadius: "1rem",
+          overflow: "hidden",
+          aspectRatio: "16/7",
+          position: "relative",
+          border: "0.5px solid #e5e7eb",
         }}
-      />
+      >
+        <img
+          src={project.thumbnail_url || DEFAULT_THUMB}
+          alt={project.title}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transition: "filter 0.45s ease",
+            filter: hovered
+              ? "saturate(0.25) brightness(0.65)"
+              : "saturate(1) brightness(1)",
+          }}
+          onError={(e) => {
+            e.currentTarget.src = DEFAULT_THUMB;
+          }}
+        />
 
-      <AnimatePresence>
-        {hovered && (
-          <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-x-0 bottom-0 bg-primary-900/95 backdrop-blur-sm px-6 py-5 flex items-center justify-between"
+        <motion.div
+          initial={false}
+          animate={{ opacity: hovered ? 1 : 0, scale: hovered ? 1 : 0.88 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "10px",
+            pointerEvents: "none",
+          }}
+        >
+          <span
+            style={{
+              padding: "6px 18px",
+              borderRadius: "999px",
+              background: "rgba(255,255,255,0.12)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              border: "0.5px solid rgba(255,255,255,0.22)",
+              color: "#fff",
+              fontSize: "14px",
+              fontWeight: 500,
+              letterSpacing: "0.01em",
+            }}
           >
-            <div>
-              <p className="text-[15px] font-medium text-white mb-0.5">
-                {project.title}
-              </p>
-              <p className="text-[12px] text-primary-300 mb-3">
-                {project.description?.slice(0, 80)}…
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {(project.technologies || []).slice(0, 5).map((t) => (
-                  <span
-                    key={t}
-                    className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary-800 text-primary-200 border border-primary-700"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center flex-shrink-0 ml-4">
-              <ArrowUpRight size={16} className="text-white" />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {project.title}
+          </span>
+
+          <div
+            style={{
+              display: "flex",
+              gap: "5px",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              maxWidth: "340px",
+            }}
+          >
+            {(project.technologies || []).slice(0, 5).map((t) => (
+              <span
+                key={t}
+                style={{
+                  padding: "2px 10px",
+                  borderRadius: "999px",
+                  fontSize: "10px",
+                  color: "rgba(255,255,255,0.65)",
+                  background: "rgba(255,255,255,0.08)",
+                  border: "0.5px solid rgba(255,255,255,0.14)",
+                }}
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.14)",
+              border: "0.5px solid rgba(255,255,255,0.22)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ArrowUpRight size={14} color="#fff" />
+          </div>
+        </motion.div>
+      </div>
     </motion.div>
   );
 };
 
 const CardHalf = ({ project, onOpen, delay = 0 }) => {
   const [hovered, setHovered] = useState(false);
+  const { ref, tilt, onMove, onLeave } = useTilt(6);
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
-      className="relative rounded-2xl overflow-hidden border border-gray-100 cursor-pointer group"
-      style={{ aspectRatio: "4/3" }}
+      animate={{ rotateX: tilt.x, rotateY: tilt.y }}
+      style={{
+        transformStyle: "preserve-3d",
+        willChange: "transform",
+        borderRadius: "1rem",
+      }}
+      onMouseMove={onMove}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseLeave={() => {
+        onLeave();
+        setHovered(false);
+      }}
       onClick={() => onOpen(project)}
+      className="cursor-pointer"
     >
-      <img
-        src={project.thumbnail_url || DEFAULT_THUMB}
-        alt={project.title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-        onError={(e) => {
-          e.currentTarget.src = DEFAULT_THUMB;
+      <div
+        style={{
+          borderRadius: "1rem",
+          overflow: "hidden",
+          aspectRatio: "4/3",
+          position: "relative",
+          border: "0.5px solid #e5e7eb",
         }}
-      />
+      >
+        <img
+          src={project.thumbnail_url || DEFAULT_THUMB}
+          alt={project.title}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transition: "filter 0.45s ease",
+            filter: hovered
+              ? "saturate(0.2) brightness(0.6)"
+              : "saturate(1) brightness(1)",
+          }}
+          onError={(e) => {
+            e.currentTarget.src = DEFAULT_THUMB;
+          }}
+        />
 
-      <AnimatePresence>
-        {hovered && (
-          <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-x-0 bottom-0 bg-primary-900/95 backdrop-blur-sm px-4 py-4 flex items-center justify-between"
+        <motion.div
+          initial={false}
+          animate={{ opacity: hovered ? 1 : 0, scale: hovered ? 1 : 0.85 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            pointerEvents: "none",
+          }}
+        >
+          <span
+            style={{
+              padding: "5px 14px",
+              borderRadius: "999px",
+              background: "rgba(255,255,255,0.12)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              border: "0.5px solid rgba(255,255,255,0.22)",
+              color: "#fff",
+              fontSize: "12px",
+              fontWeight: 500,
+            }}
           >
-            <div>
-              <p className="text-[13px] font-medium text-white mb-0.5">
-                {project.title}
-              </p>
-              <p className="text-[11px] text-primary-300 mb-2.5">
-                {project.company}
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {(project.technologies || []).slice(0, 3).map((t) => (
-                  <span
-                    key={t}
-                    className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary-800 text-primary-200 border border-primary-700"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <ArrowUpRight size={18} className="text-white flex-shrink-0 ml-3" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {project.title}
+          </span>
+
+          <div
+            style={{
+              display: "flex",
+              gap: "4px",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              maxWidth: "200px",
+            }}
+          >
+            {(project.technologies || []).slice(0, 3).map((t) => (
+              <span
+                key={t}
+                style={{
+                  padding: "2px 8px",
+                  borderRadius: "999px",
+                  fontSize: "10px",
+                  color: "rgba(255,255,255,0.6)",
+                  background: "rgba(255,255,255,0.08)",
+                  border: "0.5px solid rgba(255,255,255,0.12)",
+                }}
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+
+          <div
+            style={{
+              width: "28px",
+              height: "28px",
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.12)",
+              border: "0.5px solid rgba(255,255,255,0.2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ArrowUpRight size={12} color="#fff" />
+          </div>
+        </motion.div>
+      </div>
     </motion.div>
   );
 };
@@ -213,7 +377,6 @@ const Projects = () => {
     setSelectedProject(project);
     setIsModalOpen(true);
   };
-
   const handleClose = () => {
     setIsModalOpen(false);
     setTimeout(() => setSelectedProject(null), 300);
@@ -233,7 +396,10 @@ const Projects = () => {
     <div id="projects-content" className="scroll-mt-20">
       <SectionDivider label="Featured Projects" />
 
-      <section className="px-6 lg:px-10 max-w-6xl mx-auto pb-20">
+      <section
+        className="px-6 lg:px-10 max-w-6xl mx-auto pb-20"
+        style={{ perspective: "1400px" }}
+      >
         {featured.length === 0 && hasLoaded && (
           <motion.div
             initial={{ opacity: 0 }}
