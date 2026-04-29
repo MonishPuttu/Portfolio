@@ -27,7 +27,7 @@ const useTypewriter = (
 ) => {
   const [display, setDisplay] = useState("");
   const [wordIdx, setWordIdx] = useState(0);
-  const [phase, setPhase] = useState("typing"); // typing | pausing | deleting
+  const [phase, setPhase] = useState("typing");
 
   useEffect(() => {
     const current = words[wordIdx];
@@ -74,7 +74,7 @@ const Hero = () => {
         <span className="inline-block w-[2px] h-9 bg-primary-600 rounded-sm animate-pulse" />
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2">
         {CHIPS.map((chip, i) => (
           <motion.span
             key={chip}
@@ -87,24 +87,6 @@ const Hero = () => {
           </motion.span>
         ))}
       </div>
-
-      <div className="h-px bg-gray-100 mb-6" />
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.7 }}
-        className="flex items-center gap-2.5"
-      >
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
-        </span>
-        <span className="text-[13px] text-gray-500">
-          Open to opportunities — final year BE, shipping ML + full-stack
-          projects
-        </span>
-      </motion.div>
     </section>
   );
 };

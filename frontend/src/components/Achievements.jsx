@@ -27,29 +27,29 @@ const OPEN_SOURCE_ORGS = [
     handle: "@hermetoproject",
     role: "Organization contributor",
     url: "https://github.com/hermetoproject",
-    initials: "H",
-    color: "bg-primary-50 text-primary-700",
+    avatar: "https://github.com/hermetoproject.png",
+    color: "bg-primary-50",
   },
   {
     handle: "@PalisadoesFoundation",
     role: "Talawa API + Admin",
     url: "https://github.com/PalisadoesFoundation",
-    initials: "P",
-    color: "bg-emerald-50 text-emerald-700",
+    avatar: "https://github.com/PalisadoesFoundation.png",
+    color: "bg-emerald-50",
   },
   {
     handle: "@konflux-ci",
     role: "Supply chain & CI repos",
     url: "https://github.com/konflux-ci",
-    initials: "K",
-    color: "bg-blue-50 text-blue-700",
+    avatar: "https://github.com/konflux-ci.png",
+    color: "bg-blue-50",
   },
   {
     handle: "@bowtie-json-schema",
     role: "JSON Schema tooling",
     url: "https://github.com/bowtie-json-schema/bowtie",
-    initials: "B",
-    color: "bg-amber-50 text-amber-700",
+    avatar: "https://github.com/bowtie-json-schema.png",
+    color: "bg-amber-50",
   },
 ];
 
@@ -78,14 +78,18 @@ const TimelineItem = ({ exp, isLast }) => (
   <div className="flex gap-4">
     <div className="flex flex-col items-center flex-shrink-0">
       <div
-        className={`w-2.5 h-2.5 rounded-full mt-1 flex-shrink-0 ${
-          exp.current ? "bg-primary-500 ring-2 ring-primary-200" : "bg-gray-300"
+        className={`w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0 ring-2 ${
+          exp.current
+            ? "bg-primary-500 ring-primary-200"
+            : "bg-gray-300 ring-gray-100"
         }`}
       />
-      {!isLast && <div className="w-px flex-1 bg-gray-100 mt-1.5" />}
+      {!isLast && (
+        <div className="w-px flex-1 bg-gray-100 mt-1.5 min-h-[40px]" />
+      )}
     </div>
 
-    <div className={`pb-8 flex-1 ${isLast ? "pb-0" : ""}`}>
+    <div className={`flex-1 ${isLast ? "pb-0" : "pb-8"}`}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1">
         <h3 className="text-[14px] font-medium text-gray-900">{exp.role}</h3>
         <span className="flex items-center gap-1 text-[11px] text-gray-400">
@@ -93,7 +97,7 @@ const TimelineItem = ({ exp, isLast }) => (
           {exp.period}
         </span>
       </div>
-      <p className="text-[13px] font-medium text-primary-600 mb-1">
+      <p className="text-[13px] font-medium text-primary-600 mb-0.5">
         {exp.company}
       </p>
       <p className="text-[12px] text-gray-400 mb-2">{exp.location}</p>
@@ -111,11 +115,14 @@ const OrgCard = ({ org }) => (
     rel="noopener noreferrer"
     className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-primary-200 hover:bg-primary-50/30 transition-all group"
   >
-    <div
-      className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium flex-shrink-0 ${org.color}`}
-    >
-      {org.initials}
-    </div>
+    <img
+      src={org.avatar}
+      alt={org.handle}
+      className="w-8 h-8 rounded-full flex-shrink-0 object-cover bg-gray-100"
+      onError={(e) => {
+        e.currentTarget.style.display = "none";
+      }}
+    />
     <div className="min-w-0 flex-1">
       <p className="text-[12px] font-medium text-gray-800 truncate">
         {org.handle}
@@ -132,7 +139,7 @@ const OrgCard = ({ org }) => (
 const AwardCard = ({ award }) => {
   const Icon = award.icon;
   return (
-    <div className="flex items-start gap-3 p-4 rounded-xl border-l-2 border-primary-300 border-t border-r border-b border-gray-100 bg-white">
+    <div className="flex items-start gap-3 p-4 rounded-xl border-l-2 border-primary-300 border border-gray-100 bg-white">
       <div
         className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${award.accent}`}
       >

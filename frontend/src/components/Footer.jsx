@@ -13,26 +13,13 @@ const SOCIALS = [
 ];
 
 const Footer = () => (
-  <footer className="relative bg-gray-950 text-white overflow-hidden">
-    <div className="absolute inset-0 flex items-center overflow-hidden pointer-events-none select-none">
-      <div className="animate-marquee whitespace-nowrap">
-        {[...Array(4)].map((_, i) => (
-          <span
-            key={i}
-            className="inline-block text-[7rem] md:text-[10rem] font-black tracking-tighter text-white/[0.03] leading-none"
-          >
-            MONISH PUTTU&nbsp;&nbsp;
-          </span>
-        ))}
-      </div>
-    </div>
-
-    <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-10 py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-      <span className="text-[13px] font-medium tracking-[0.06em] text-primary-400">
+  <footer className="border-t border-gray-100 bg-white">
+    <div className="max-w-6xl mx-auto px-6 lg:px-10 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <span className="text-[13px] font-medium tracking-[0.06em] text-primary-600">
         MONISH PUTTU
       </span>
 
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-5">
         {SOCIALS.map(({ icon: Icon, href, label }) => (
           <motion.a
             key={label}
@@ -41,15 +28,15 @@ const Footer = () => (
             rel="noopener noreferrer"
             aria-label={label}
             whileHover={{ y: -2 }}
-            className="text-gray-500 hover:text-primary-400 transition-colors"
+            className="text-gray-400 hover:text-primary-500 transition-colors"
           >
             <Icon size={16} />
           </motion.a>
         ))}
       </div>
 
-      <span className="text-[11px] text-gray-600">
-        Built with React + Tailwind
+      <span className="text-[11px] text-gray-400">
+        © {new Date().getFullYear()} Monish Puttu
       </span>
     </div>
   </footer>
