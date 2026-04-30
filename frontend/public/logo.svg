@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 768" role="img" aria-label="Portfolio M logo">
-  <rect x="24" y="24" width="720" height="720" rx="132" fill="#ddd5d5" />
+  <rect x="24" y="24" width="720" height="720" rx="132" fill="#EEEDFE" />
   <path
     d="M214 548V226L354 490L554 226V548"
     fill="none"
-    stroke="#a855f7"
+    stroke="#534AB7"
     stroke-width="138"
     stroke-linecap="round"
     stroke-linejoin="round"
