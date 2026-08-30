@@ -8,8 +8,10 @@ const Loader = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const MIN_LOADER_MS = 4200;
-    const VIDEO_WAIT_TIMEOUT_MS = 6000;
+    // The bento grid renders no video until a project modal opens, so the
+    // loader no longer has anything to wait for — keep it short and honest.
+    const MIN_LOADER_MS = 1100;
+    const VIDEO_WAIT_TIMEOUT_MS = 1500;
     const HOLD_POINTS = [56, 64, 72];
     const holdPoint =
       HOLD_POINTS[Math.floor(Math.random() * HOLD_POINTS.length)];
@@ -18,7 +20,8 @@ const Loader = () => {
 
     const isVideoReady = () => {
       const videos = Array.from(document.querySelectorAll("video[src]"));
-      if (videos.length === 0) return false;
+      // Nothing to wait for is "ready", not "never ready".
+      if (videos.length === 0) return true;
 
       const readyVideos = videos.filter(
         (video) => video.readyState >= 2,
