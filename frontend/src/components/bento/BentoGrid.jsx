@@ -119,10 +119,6 @@ const BentoGrid = () => {
    */
   const spyMutedUntil = useRef(0);
 
-  /** A hairline at the very end of the document, so "scrolled to the bottom"
-   *  is an observable event rather than something to poll for. */
-  const pageEndRef = useRef(null);
-
   /**
    * Scrolls by computed offset rather than `scrollIntoView`.
    *
@@ -168,9 +164,9 @@ const BentoGrid = () => {
     ]).filter(([, node]) => node);
     if (!entries.length) return undefined;
 
-    const endMarker = pageEndRef.current;
     const tops = new Map();
-    let atPageEnd = false;
+    const [lastId, lastNode] = entries[entries.length - 1];
+    let lastArrived = false;
 
     const resolve = () => {
       if (Date.now() < spyMutedUntil.current) return;
@@ -183,22 +179,20 @@ const BentoGrid = () => {
         if (top !== undefined && top <= ACTIVE_MARKER) next = id;
       });
 
-      // The final section never reaches the top of a page that ends just
-      // below it, so hitting the bottom counts as arriving.
-      if (atPageEnd) next = SECTION_IDS[SECTION_IDS.length - 1];
+      // The final section cannot reach the marker on a page that ends just
+      // below it, so seeing enough of it counts as having arrived. Without
+      // this the indicator falls back to the previous section the moment a
+      // click on the last one settles.
+      if (lastArrived) next = lastId;
 
       setActiveSection((current) => (current === next ? current : next));
     };
 
     // Shifting the root's top edge to the marker makes the observer report
     // exactly the crossings that change the answer, and nothing else.
-    const observer = new IntersectionObserver(
+    const crossings = new IntersectionObserver(
       (records) => {
         records.forEach((record) => {
-          if (record.target === endMarker) {
-            atPageEnd = record.isIntersecting;
-            return;
-          }
           const id = entries.find(([, node]) => node === record.target)?.[0];
           if (id) tops.set(id, record.boundingClientRect.top);
         });
@@ -206,13 +200,24 @@ const BentoGrid = () => {
       },
       { rootMargin: `-${ACTIVE_MARKER}px 0px 0px 0px`, threshold: 0 },
     );
+    entries.forEach(([, node]) => crossings.observe(node));
 
-    entries.forEach(([, node]) => observer.observe(node));
-    if (endMarker) observer.observe(endMarker);
+    // Watching the section itself, rather than a hairline at the end of the
+    // document: that sat exactly on the viewport edge at full scroll and
+    // reported its own intersection inconsistently.
+    const arrival = new IntersectionObserver(
+      ([record]) => {
+        lastArrived = record.intersectionRatio >= 0.5;
+        resolve();
+      },
+      { threshold: [0, 0.5, 1] },
+    );
+    arrival.observe(lastNode);
 
     return () => {
       cancelScroll();
-      observer.disconnect();
+      crossings.disconnect();
+      arrival.disconnect();
     };
     // Anchors only exist once the projects have rendered.
   }, [loaded, visible.length]);
@@ -277,7 +282,6 @@ const BentoGrid = () => {
         PostgreSQL
       </footer>
 
-      <div ref={pageEndRef} aria-hidden="true" className="h-px" />
 
       {/* ProjectModal runs its own AnimatePresence and no-ops without a project. */}
       <ProjectModal
