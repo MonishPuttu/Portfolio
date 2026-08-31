@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * One set of surface tokens, two themes. Components only ever reference the
+ * token (`bg-surface`, `text-ink`), so nothing needs a `dark:` variant except
+ * the handful of places that genuinely differ.
+ */
+:root {
+  --ground: 233 233 239;
+  --surface: 255 255 255;
+  --line: 225 225 233;
+  --ink: 25 25 34;
+  --ink-soft: 78 79 94;
+  --ink-dim: 131 132 154;
+  --hero: 19 19 25;
+  --on-ink: 255 255 255;
+  --track: 236 234 253;
+
+  --tile-shadow: 0 18px 34px -20px rgb(25 25 34 / 0.4);
+  --scrollbar: 200 200 214;
+}
+
+.dark {
+  --ground: 14 14 18;
+  --surface: 23 23 30;
+  --line: 38 38 47;
+  --ink: 237 237 243;
+  --ink-soft: 169 169 186;
+  --ink-dim: 123 123 141;
+  /* Violet-tinted so the hero tile still reads as the hero against a dark ground. */
+  --hero: 28 24 48;
+  --on-ink: 14 14 18;
+  --track: 42 36 64;
+
+  --tile-shadow: 0 18px 34px -20px rgb(0 0 0 / 0.8);
+  --scrollbar: 56 56 70;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -10,8 +46,8 @@ body {
   font-family: "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #e9e9ef;
-  color: #191922;
+  background-color: rgb(var(--ground));
+  color: rgb(var(--ink));
 }
 
 ::-webkit-scrollbar {
@@ -22,7 +58,7 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c8c8d6;
+  background: rgb(var(--scrollbar));
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -47,7 +83,8 @@ body {
     transition:
       transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
       box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-      border-color 0.2s ease;
+      border-color 0.2s ease,
+      background-color 0.2s ease;
   }
 
   .tile-interactive {
@@ -56,8 +93,8 @@ body {
 
   .tile-interactive:hover {
     transform: translateY(-4px);
-    box-shadow: 0 18px 34px -20px rgba(25, 25, 34, 0.4);
-    border-color: rgba(91, 75, 232, 0.4);
+    box-shadow: var(--tile-shadow);
+    border-color: rgb(91 75 232 / 0.4);
   }
 
   .tile-label {

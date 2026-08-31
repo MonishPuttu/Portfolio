@@ -1,79 +1,13 @@
+import { DEFAULT_PROJECT_THUMBNAIL } from "./projectThumbnails";
+
 /**
- * Filter tags for the project tiles.
+ * Presentation helpers for project tiles.
  *
- * These are derived from the `technologies` array the API already returns
- * rather than added as a new column, so the grid works against the current
- * schema with no migration and no re-seed. If a `tags` column is added later,
- * `deriveTags` should prefer it and fall back to this inference.
- */
-
-export const FILTERS = [
-  { id: "all", label: "Everything" },
-  { id: "ai", label: "AI & ML" },
-  { id: "fs", label: "Full-stack" },
-  { id: "rt", label: "Real-time" },
-  { id: "mob", label: "Mobile" },
-];
-
-const TAG_KEYWORDS = {
-  ai: [
-    "llm",
-    "speech-to-text",
-    "text-to-speech",
-    "opencv",
-    "deep learning",
-    "computer vision",
-    "tensorflow",
-    "scikit",
-    "pytorch",
-  ],
-  fs: [
-    "next.js",
-    "node.js",
-    "express",
-    "react",
-    "postgresql",
-    "drizzle",
-    "typescript",
-    "javascript",
-    "vercel",
-  ],
-  rt: ["websockets", "canvas", "socket.io", "webrtc"],
-  mob: ["react native", "expo", "eas"],
-};
-
-const normalize = (value = "") => String(value).toLowerCase();
-
-/** Infer filter tags for a project from its technologies. */
-export const deriveTags = (project) => {
-  if (Array.isArray(project?.tags) && project.tags.length) return project.tags;
-
-  const haystack = [
-    ...(project?.technologies || []),
-    project?.title,
-    project?.company,
-  ]
-    .map(normalize)
-    .join(" ");
-
-  const tags = Object.entries(TAG_KEYWORDS)
-    .filter(([, keywords]) => keywords.some((k) => haystack.includes(k)))
-    .map(([tag]) => tag);
-
-  // "React Native" contains "react", which would otherwise tag every mobile
-  // app as full-stack. Mobile is the more specific claim, so it wins outright.
-  if (tags.includes("mob")) return ["mob"];
-
-  return tags.length ? tags : ["fs"];
-};
-
-export const matchesFilter = (project, filter) =>
-  filter === "all" || deriveTags(project).includes(filter);
-
-/**
  * The `color` column is populated for every seeded project and was never read
- * by the old UI. It drives each tile's swatch here.
+ * by the old UI. It backs each tile, and shows through for any project that
+ * has no screenshot yet.
  */
+
 export const projectGradient = (project) => {
   const hex = project?.color || "#5B4BE8";
   return `linear-gradient(140deg, ${hex}2E, ${hex} 62%, ${hex}AA)`;
@@ -84,14 +18,33 @@ export const projectSwatch = (project) => {
   return `linear-gradient(140deg, ${hex}, ${hex}99)`;
 };
 
-/** Display order for the featured row — most substantial work first. */
+/**
+ * True when the project has a real screenshot rather than the generic
+ * placeholder, so a tile can fall back to its colour instead of showing an
+ * empty grey card.
+ */
+export const hasRealThumbnail = (project) => {
+  const thumb = project?.thumbnail_url || project?.thumbnailUrl;
+  return Boolean(thumb) && thumb !== DEFAULT_PROJECT_THUMBNAIL;
+};
+
+export const projectThumbnail = (project) =>
+  hasRealThumbnail(project)
+    ? project.thumbnail_url || project.thumbnailUrl
+    : null;
+
+/** Hidden from the grid — kept in the API for anyone reading it directly. */
+export const isListed = (project) => project?.category !== "Other";
+
+/** Display order — most substantial work first. */
 const PRIORITY = {
   AniTalk: 1,
   Renz: 2,
-  TrafficFlow: 3,
-  Drawify: 4,
-  InternHub: 5,
-  TrackTots: 6,
+  "MLOps": 3,
+  "LLM Multi-Agent": 4,
+  TrafficFlow: 5,
+  Drawify: 6,
+  InternHub: 7,
 };
 
 export const projectPriority = (title = "") => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowDown, FileText } from "lucide-react";
+import { ArrowDown, Github } from "lucide-react";
 import Tile, { TileLabel } from "./Tile";
 import useTypewriter from "./useTypewriter";
 import { PROFILE } from "../../config/profile";
@@ -10,7 +10,7 @@ const IntroTile = ({ onSeeWork }) => {
   return (
     <Tile
       span="col-span-12 lg:col-span-7 lg:row-span-2"
-      className="min-h-[262px] justify-between border-ink bg-ink text-white"
+      className="min-h-[262px] justify-between border-hero bg-hero text-white"
     >
       {/* Ambient orb — the only decorative element on the page. */}
       <div
@@ -22,13 +22,11 @@ const IntroTile = ({ onSeeWork }) => {
         }}
       />
 
-      <TileLabel className="text-white/45">
-        {PROFILE.name} — {PROFILE.location}
-      </TileLabel>
+      <TileLabel className="text-white/45">{PROFILE.name}</TileLabel>
 
       <h1 className="mt-[18px] font-display text-[clamp(29px,4.4vw,55px)] font-extrabold leading-[0.98] tracking-[-0.045em] text-balance">
         {PROFILE.headline.lead}{" "}
-        <em className="not-italic text-spark">{PROFILE.headline.accent}</em>{" "}
+        <em className="not-italic text-spark">{PROFILE.headline.accent}</em>
         {PROFILE.headline.trail}
       </h1>
 
@@ -47,7 +45,7 @@ const IntroTile = ({ onSeeWork }) => {
         <button
           type="button"
           onClick={onSeeWork}
-          className="flex items-center gap-2 rounded-full bg-spark px-[19px] py-[11px] text-[12.5px] font-semibold text-ink transition-colors hover:bg-white"
+          className="flex items-center gap-2 rounded-full bg-spark px-[19px] py-[11px] text-[12.5px] font-semibold text-[#131319] transition-colors hover:bg-white"
         >
           See the work
           <ArrowDown size={14} />
@@ -58,7 +56,7 @@ const IntroTile = ({ onSeeWork }) => {
           rel="noopener noreferrer"
           className="flex items-center gap-2 rounded-full border border-white/20 px-[19px] py-[11px] text-[12.5px] font-semibold text-white/90 transition-colors hover:border-white"
         >
-          <FileText size={14} />
+          <Github size={14} />
           GitHub profile
         </a>
       </div>

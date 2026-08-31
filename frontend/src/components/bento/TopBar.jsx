@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Moon, Sun } from "lucide-react";
 import { PROFILE } from "../../config/profile";
 
 const SECTIONS = [
@@ -9,7 +10,7 @@ const SECTIONS = [
   { id: "contact", label: "Contact" },
 ];
 
-const TopBar = ({ active, onNavigate }) => (
+const TopBar = ({ active, onNavigate, isDark, onToggleTheme }) => (
   <header className="sticky top-0 z-30 flex flex-wrap items-center gap-3 bg-ground/85 px-4 py-3.5 backdrop-blur-xl sm:px-6 lg:px-[22px]">
     <button
       type="button"
@@ -29,9 +30,7 @@ const TopBar = ({ active, onNavigate }) => (
           type="button"
           onClick={() => onNavigate(section.id)}
           className={`relative flex-1 rounded-full px-3 py-[7px] text-[12.5px] font-medium transition-colors sm:flex-none sm:px-[15px] ${
-            active === section.id
-              ? "text-white"
-              : "text-ink-soft hover:text-ink"
+            active === section.id ? "text-onInk" : "text-ink-soft hover:text-ink"
           }`}
         >
           {active === section.id && (
@@ -53,6 +52,16 @@ const TopBar = ({ active, onNavigate }) => (
       />
       {PROFILE.status}
     </span>
+
+    <button
+      type="button"
+      onClick={onToggleTheme}
+      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      title={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      className="grid h-[34px] w-[34px] flex-none place-items-center rounded-full border border-line bg-surface text-ink-soft transition-colors hover:border-primary-600 hover:text-primary-600"
+    >
+      {isDark ? <Sun size={15} /> : <Moon size={15} />}
+    </button>
   </header>
 );
 

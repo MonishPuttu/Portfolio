@@ -45,7 +45,8 @@ const FeaturedProjectTile = ({ project, onOpen, delay = 0, tileRef }) => {
           aria-hidden="true"
           className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent"
         />
-        <span className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 pl-1 text-ink transition-transform duration-200 group-hover:scale-110">
+        {/* Sits on the artwork, not on a themed surface, so it stays white-on-dark. */}
+        <span className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 pl-1 text-[#131319] transition-transform duration-200 group-hover:scale-110">
           <Play size={17} fill="currentColor" />
         </span>
         <span className="relative text-[9.5px] font-semibold uppercase tracking-[0.16em] text-white/85">

@@ -1,17 +1,32 @@
 /** @type {import('tailwindcss').Config} */
+
+/**
+ * Surface colours are CSS custom properties so light and dark share one set of
+ * utility classes — `bg-surface` and `text-ink` mean "the right thing for the
+ * current theme" rather than a fixed hex. Channels are space-separated RGB so
+ * Tailwind's opacity modifiers (`bg-ground/60`) still work.
+ */
+const themed = (name) => `rgb(var(--${name}) / <alpha-value>)`;
+
 export default {
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
-        // Bento palette — dove ground so white tiles read as objects.
-        ground: "#E9E9EF",
-        surface: "#FFFFFF",
-        line: "#E1E1E9",
+        ground: themed("ground"),
+        surface: themed("surface"),
+        line: themed("line"),
+        /** The dark hero tile. Stays distinct from the ground in both themes. */
+        hero: themed("hero"),
+        /** Text that sits on top of an `ink` fill. */
+        onInk: themed("on-ink"),
+        /** Track behind a filled progress bar. */
+        track: themed("track"),
         ink: {
-          DEFAULT: "#191922",
-          soft: "#4E4F5E",
-          dim: "#83849A",
+          DEFAULT: themed("ink"),
+          soft: themed("ink-soft"),
+          dim: themed("ink-dim"),
         },
         primary: {
           50: "#F4F2FE",

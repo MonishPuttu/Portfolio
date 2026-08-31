@@ -22,7 +22,7 @@ const SkillsTile = ({ delay = 0, tileRef }) => (
               {skill.evidence}
             </span>
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-primary-100">
+          <div className="h-1.5 overflow-hidden rounded-full bg-track">
             <motion.div
               className="h-full rounded-full bg-gradient-to-r from-primary-600 to-primary-400"
               initial={{ width: 0 }}

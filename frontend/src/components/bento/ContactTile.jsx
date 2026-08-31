@@ -159,7 +159,7 @@ const ContactTile = ({ delay = 0, tileRef }) => {
         <button
           type="submit"
           disabled={sending}
-          className="flex items-center justify-center gap-2 rounded-xl bg-spark px-5 py-3 text-[13px] font-bold text-ink transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex items-center justify-center gap-2 rounded-xl bg-spark px-5 py-3 text-[13px] font-bold text-[#131319] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           {sending ? (
             <>

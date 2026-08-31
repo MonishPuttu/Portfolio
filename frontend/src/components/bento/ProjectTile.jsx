@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import Tile from "./Tile";
-import { projectSwatch, shortTitle, subTitle } from "../../config/projectTags";
+import {
+  projectSwatch,
+  projectThumbnail,
+  shortTitle,
+  subTitle,
+} from "../../config/projectTags";
 
 const ProjectTile = ({ project, onOpen, delay = 0 }) => {
   const title = shortTitle(project);
   const line = subTitle(project) || project.description;
+  const thumb = projectThumbnail(project);
+  const [imageFailed, setImageFailed] = useState(false);
+
+  const showImage = Boolean(thumb) && !imageFailed;
 
   return (
     <Tile
@@ -15,21 +24,34 @@ const ProjectTile = ({ project, onOpen, delay = 0 }) => {
       interactive
       delay={delay}
       onClick={() => onOpen(project)}
-      className="group min-h-[150px] justify-between"
+      className="group min-h-[184px] justify-between"
       aria-label={`Open ${title}`}
     >
       <span
         aria-hidden="true"
-        className="absolute right-4 top-4 grid h-[26px] w-[26px] translate-y-[-4px] place-items-center rounded-full bg-ground text-ink-soft opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"
+        className="absolute right-4 top-4 z-10 grid h-[26px] w-[26px] translate-y-[-4px] place-items-center rounded-full bg-surface/90 text-ink-soft opacity-0 shadow-sm backdrop-blur-sm transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"
       >
         <ArrowUpRight size={12} />
       </span>
 
+      {/* The colour always backs the tile, so a missing screenshot degrades to
+          a branded swatch rather than an empty grey box. */}
       <div
-        aria-hidden="true"
-        className="mb-3.5 h-14 w-full rounded-xl"
+        className="mb-3.5 h-[92px] w-full overflow-hidden rounded-xl"
         style={{ background: projectSwatch(project) }}
-      />
+      >
+        {showImage && (
+          <img
+            src={thumb}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+            onError={() => setImageFailed(true)}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+          />
+        )}
+      </div>
 
       <h3 className="mb-1.5 font-display text-[18px] font-extrabold tracking-[-0.03em]">
         {title}

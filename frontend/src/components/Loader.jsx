@@ -105,7 +105,7 @@ const Loader = () => {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-ground"
         >
           <motion.div
             initial={{ y: 10, opacity: 0 }}
@@ -121,7 +121,7 @@ const Loader = () => {
                 strokeWidth="138"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-primary-200"
+                className="text-track"
               />
 
               <motion.path
@@ -139,7 +139,7 @@ const Loader = () => {
             </svg>
           </motion.div>
 
-          <div className="w-56 h-[3px] bg-primary-100 rounded-full overflow-hidden">
+          <div className="w-56 h-[3px] bg-track rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-primary-600 rounded-full"
               style={{ width: `${Math.min(progress, 100)}%` }}
@@ -150,7 +150,7 @@ const Loader = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="mt-4 text-xs font-semibold tracking-[0.18em] uppercase text-primary-700"
+            className="mt-4 text-xs font-semibold tracking-[0.18em] uppercase text-primary-600 dark:text-primary-300"
           >
             Loading {Math.floor(Math.min(progress, 100))}%
           </motion.p>
