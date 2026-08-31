@@ -11,6 +11,22 @@
  * has settled, rather than guessing with a timer that can expire mid-scroll.
  */
 
+/**
+ * A fixed duration makes speed depend on distance: the same 520ms covering
+ * 331px and 1011px reads as two different scrolls, and the long one whooshes.
+ * Pacing by distance keeps the travel speed roughly constant, with a floor so
+ * short hops are not a snap and a ceiling so long ones do not drag.
+ */
+const PIXELS_PER_MS = 1.6;
+const MIN_DURATION_MS = 340;
+const MAX_DURATION_MS = 820;
+
+const durationFor = (distance) =>
+  Math.min(
+    MAX_DURATION_MS,
+    Math.max(MIN_DURATION_MS, Math.abs(distance) / PIXELS_PER_MS),
+  );
+
 let frame = null;
 let guard = null;
 let pendingDone = null;
@@ -32,12 +48,13 @@ export const cancelScroll = () => {
   pendingDone = null;
 };
 
-export const smoothScrollTo = (top, onDone, duration = 520) => {
+export const smoothScrollTo = (top, onDone) => {
   const target = Math.max(0, top);
   cancelScroll();
 
   const from = window.scrollY;
   const distance = target - from;
+  const duration = durationFor(distance);
 
   const finish = () => {
     frame = null;
