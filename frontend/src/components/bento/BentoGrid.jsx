@@ -22,6 +22,7 @@ import AwardsTile from "./AwardsTile";
 import ContactTile from "./ContactTile";
 import ProjectModal from "../ProjectModal";
 import useTheme from "./useTheme";
+import { cancelScroll, smoothScrollTo } from "./smoothScroll";
 
 import API_URL from "../../config/api";
 import { isListed, sortProjects } from "../../config/projectTags";
@@ -32,7 +33,10 @@ import {
 } from "../../config/projectThumbnails";
 
 /** Anchors the nav pill tracks, in document order. */
-const SECTION_IDS = ["work", "about", "open-source", "contact"];
+const SECTION_IDS = ["about", "work", "open-source", "contact"];
+
+/** Clearance for the sticky header when scrolling to an anchor. */
+const HEADER_OFFSET = 86;
 
 const BentoGrid = () => {
   const [projects, setProjects] = useState([]);
@@ -97,15 +101,31 @@ const BentoGrid = () => {
     setTimeout(() => setSelected(null), 300);
   }, []);
 
+  /**
+   * Scrolls by computed offset rather than `scrollIntoView`.
+   *
+   * Tiles animate in on scroll, and those layout shifts cancel a native smooth
+   * scroll partway — which looked like the nav doing nothing at all. Measuring
+   * the target once and driving the window keeps it reliable, and lets the
+   * sticky header be accounted for explicitly.
+   */
   const scrollTo = useCallback((id) => {
-    const node = id === "top" ? null : sectionRefs.current[id];
-    if (!node) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    if (id === "top") {
       setActiveSection("work");
+      smoothScrollTo(0);
       return;
     }
+
+    const node = sectionRefs.current[id];
+    if (!node) return;
+
+    // Scroll before touching state. Setting it first re-renders the grid,
+    // which reattaches every anchor ref mid-flight and can interrupt the
+    // scroll that was just requested.
+    const top =
+      node.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+    smoothScrollTo(top);
     setActiveSection(id);
-    node.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   // Track which anchor is in view so the nav pill reflects the real position.
@@ -115,7 +135,11 @@ const BentoGrid = () => {
       let next = "work";
       SECTION_IDS.forEach((id) => {
         const node = sectionRefs.current[id];
-        if (node && node.offsetTop <= marker) next = id;
+        if (!node) return;
+        // offsetTop is relative to the offset parent; the grid gives a wrong
+        // answer there, so measure against the document like scrollTo does.
+        const top = node.getBoundingClientRect().top + window.scrollY;
+        if (top <= marker) next = id;
       });
       setActiveSection(next);
     };
@@ -124,6 +148,7 @@ const BentoGrid = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
+      cancelScroll();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
@@ -143,7 +168,7 @@ const BentoGrid = () => {
         <MetricTile delay={0.04} />
         <NowTile delay={0.08} />
 
-        <SkillsTile delay={0.02} tileRef={setSectionRef("about")} />
+        <ExperienceTile delay={0.02} tileRef={setSectionRef("about")} />
 
         {!loaded && (
           <div className="col-span-12 rounded-tile border border-line bg-surface p-8 text-center text-[13px] text-ink-dim">
@@ -166,8 +191,6 @@ const BentoGrid = () => {
           />
         )}
 
-        <OpenSourceTile delay={0.04} tileRef={setSectionRef("open-source")} />
-
         {rest.map((project, i) => (
           <ProjectTile
             key={project.id}
@@ -178,7 +201,9 @@ const BentoGrid = () => {
         ))}
 
         <ToolsTile delay={0.04} />
-        <ExperienceTile delay={0.02} />
+
+        <SkillsTile delay={0.02} />
+        <OpenSourceTile delay={0.04} tileRef={setSectionRef("open-source")} />
         <AwardsTile delay={0.06} />
 
         <ContactTile delay={0.02} tileRef={setSectionRef("contact")} />

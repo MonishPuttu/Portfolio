@@ -40,7 +40,7 @@ const OrgIcon = ({ org }) => {
 
 const OpenSourceTile = ({ delay = 0, tileRef }) => (
   <Tile
-    span="col-span-12 lg:col-span-4"
+    span="col-span-12 md:col-span-6 lg:col-span-4"
     delay={delay}
     tileRef={tileRef}
     className="gap-0"

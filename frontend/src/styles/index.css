@@ -22,25 +22,31 @@
   --scrollbar: 200 200 214;
 }
 
+/**
+ * Neutral greys, no colour cast. Elevation reads as three steps getting
+ * lighter: ground (darkest) → surface → hero, which is what separates the
+ * hero tile from the page now that it can't rely on being the dark one.
+ */
 .dark {
-  --ground: 14 14 18;
-  --surface: 23 23 30;
-  --line: 38 38 47;
-  --ink: 237 237 243;
-  --ink-soft: 169 169 186;
-  --ink-dim: 123 123 141;
-  /* Violet-tinted so the hero tile still reads as the hero against a dark ground. */
-  --hero: 28 24 48;
-  --on-ink: 14 14 18;
-  --track: 42 36 64;
+  --ground: 10 10 10;
+  --surface: 22 22 22;
+  --line: 42 42 42;
+  --ink: 237 237 237;
+  --ink-soft: 168 168 168;
+  --ink-dim: 122 122 122;
+  --hero: 32 32 32;
+  --on-ink: 10 10 10;
+  --track: 48 48 48;
 
-  --tile-shadow: 0 18px 34px -20px rgb(0 0 0 / 0.8);
-  --scrollbar: 56 56 70;
+  --tile-shadow: 0 18px 34px -20px rgb(0 0 0 / 0.85);
+  --scrollbar: 58 58 58;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/**
+ * No `scroll-behavior: smooth` here on purpose. It animates *every* scroll
+ * write, including the ones meant to be instant, and double-handles the
+ * smoothness that the nav already requests explicitly via scrollTo.
+ */
 
 body {
   font-family: "Inter", system-ui, sans-serif;
@@ -120,9 +126,6 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   .animate-marquee {
     animation: none;
   }

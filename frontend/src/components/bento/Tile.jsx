@@ -43,8 +43,15 @@ const Tile = ({
   );
 };
 
-export const TileLabel = ({ children, className }) => (
-  <span className={clsx("tile-label", className)}>{children}</span>
+/**
+ * `flush` drops the auto bottom margin. By default the label pushes whatever
+ * follows to the bottom of the tile; a flush label keeps its content packed at
+ * the top and leaves the empty space below.
+ */
+export const TileLabel = ({ children, className, flush = false }) => (
+  <span className={clsx("tile-label", flush && "!mb-0", className)}>
+    {children}
+  </span>
 );
 
 export default Tile;

@@ -85,7 +85,7 @@ export const TOOLS = [
 
 export const EXPERIENCE = [
   {
-    year: "2026→",
+    year: "2026",
     role: "Software Engineering Intern, Data Engineering",
     org: "entomo (ENTOMOGTDIC Pvt. Ltd.)",
     detail:
@@ -99,7 +99,7 @@ export const EXPERIENCE = [
       "Built an end-to-end traffic flow detection system using computer vision and deep learning, applying OpenCV for real-time vehicle detection and density analysis, with pipelines ingesting live video streams for real-time inference.",
   },
   {
-    year: "2024→",
+    year: "2024",
     role: "Open-source contributor",
     org: "Supply chain security & package management",
     detail:

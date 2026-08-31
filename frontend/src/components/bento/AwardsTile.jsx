@@ -3,8 +3,13 @@ import Tile, { TileLabel } from "./Tile";
 import { AWARDS, AWARD_TONES } from "../../config/profile";
 
 const AwardsTile = ({ delay = 0 }) => (
-  <Tile span="col-span-12 lg:col-span-5" delay={delay} className="gap-0">
-    <TileLabel>Awards &amp; recognition</TileLabel>
+  <Tile
+    span="col-span-12 md:col-span-6 lg:col-span-4"
+    delay={delay}
+    className="gap-0"
+  >
+    {/* Flush so the list sits at the top and the slack falls below it. */}
+    <TileLabel flush>Awards &amp; recognition</TileLabel>
 
     <div className="mt-3.5">
       {AWARDS.map((award) => (
@@ -18,7 +23,7 @@ const AwardsTile = ({ delay = 0 }) => (
           >
             {award.glyph}
           </span>
-          <div>
+          <div className="min-w-0">
             <b className="block text-[13px] font-semibold">{award.title}</b>
             <span className="text-[11.5px] text-ink-dim">{award.subtitle}</span>
           </div>
