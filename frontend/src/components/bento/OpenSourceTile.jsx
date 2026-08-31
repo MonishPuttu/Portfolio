@@ -45,7 +45,7 @@ const OpenSourceTile = ({ delay = 0, tileRef }) => (
     tileRef={tileRef}
     className="gap-0"
   >
-    <TileLabel>Open source</TileLabel>
+    <TileLabel flush>Open source</TileLabel>
 
     <div className="mt-3.5 flex flex-col gap-1">
       {OPEN_SOURCE_ORGS.map((org) => (

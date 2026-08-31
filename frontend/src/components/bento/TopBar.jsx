@@ -30,14 +30,23 @@ const TopBar = ({ active, onNavigate, isDark, onToggleTheme }) => (
           type="button"
           onClick={() => onNavigate(section.id)}
           className={`relative flex-1 rounded-full px-3 py-[7px] text-[12.5px] font-medium transition-colors sm:flex-none sm:px-[15px] ${
-            active === section.id ? "text-onInk" : "text-ink-soft hover:text-ink"
+            active === section.id
+              ? "text-onInk"
+              : "text-ink-soft hover:text-ink"
           }`}
         >
           {active === section.id && (
             <motion.span
               layoutId="bento-nav-pill"
               className="absolute inset-0 rounded-full bg-ink"
-              transition={{ type: "spring", stiffness: 480, damping: 38 }}
+              // Gentle enough to stay smooth when the target changes mid-flight;
+              // the previous spring was stiff enough to read as a stutter.
+              transition={{
+                type: "spring",
+                stiffness: 320,
+                damping: 34,
+                mass: 0.7,
+              }}
             />
           )}
           <span className="relative">{section.label}</span>

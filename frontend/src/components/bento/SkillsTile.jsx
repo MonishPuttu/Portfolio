@@ -10,7 +10,7 @@ const SkillsTile = ({ delay = 0, tileRef }) => (
     tileRef={tileRef}
     className="gap-3"
   >
-    <TileLabel>Depth</TileLabel>
+    <TileLabel flush>Depth</TileLabel>
 
     <div className="mt-3.5 flex flex-col gap-3">
       {SKILLS.map((skill, i) => (

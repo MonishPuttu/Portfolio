@@ -38,6 +38,9 @@ const SECTION_IDS = ["about", "work", "open-source", "contact"];
 /** Clearance for the sticky header when scrolling to an anchor. */
 const HEADER_OFFSET = 86;
 
+/** How long a nav scroll owns the indicator before the spy takes over again. */
+const SCROLL_SETTLE_MS = 700;
+
 const BentoGrid = () => {
   const [projects, setProjects] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -102,6 +105,13 @@ const BentoGrid = () => {
   }, []);
 
   /**
+   * While a nav scroll is in flight the reader has already told us where they
+   * are going, so the spy must not drag the pill through every section on the
+   * way past. Suppressing it is what stops the indicator stuttering.
+   */
+  const spyMutedUntil = useRef(0);
+
+  /**
    * Scrolls by computed offset rather than `scrollIntoView`.
    *
    * Tiles animate in on scroll, and those layout shifts cancel a native smooth
@@ -110,6 +120,8 @@ const BentoGrid = () => {
    * sticky header be accounted for explicitly.
    */
   const scrollTo = useCallback((id) => {
+    spyMutedUntil.current = Date.now() + SCROLL_SETTLE_MS;
+
     if (id === "top") {
       setActiveSection("work");
       smoothScrollTo(0);
@@ -128,31 +140,54 @@ const BentoGrid = () => {
     setActiveSection(id);
   }, []);
 
-  // Track which anchor is in view so the nav pill reflects the real position.
+  /**
+   * Tracks which anchor is in view.
+   *
+   * An IntersectionObserver rather than a scroll listener: measuring four
+   * elements on every scroll event thrashes layout, and that was the jank in
+   * the nav indicator. The browser does the work off the main thread here and
+   * only calls back when a section actually crosses the line.
+   *
+   * `rootMargin` narrows the viewport to a band just under the sticky header,
+   * so "current" means the last section to have passed beneath it.
+   */
   useEffect(() => {
-    const onScroll = () => {
-      const marker = window.scrollY + 140;
-      let next = "work";
-      SECTION_IDS.forEach((id) => {
-        const node = sectionRefs.current[id];
-        if (!node) return;
-        // offsetTop is relative to the offset parent; the grid gives a wrong
-        // answer there, so measure against the document like scrollTo does.
-        const top = node.getBoundingClientRect().top + window.scrollY;
-        if (top <= marker) next = id;
-      });
-      setActiveSection(next);
-    };
+    const entries = SECTION_IDS.map((id) => [
+      id,
+      sectionRefs.current[id],
+    ]).filter(([, node]) => node);
+    if (!entries.length) return undefined;
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    const passed = new Set();
+
+    const observer = new IntersectionObserver(
+      (records) => {
+        records.forEach((record) => {
+          const id = entries.find(([, node]) => node === record.target)?.[0];
+          if (!id) return;
+          if (record.isIntersecting) passed.add(id);
+          else passed.delete(id);
+        });
+
+        if (Date.now() < spyMutedUntil.current) return;
+
+        // Last section in document order that is currently in the band.
+        const next = [...SECTION_IDS].reverse().find((id) => passed.has(id));
+        setActiveSection((current) => {
+          const resolved = next || "work";
+          return current === resolved ? current : resolved;
+        });
+      },
+      { rootMargin: `-${HEADER_OFFSET}px 0px -55% 0px`, threshold: 0 },
+    );
+
+    entries.forEach(([, node]) => observer.observe(node));
     return () => {
       cancelScroll();
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      observer.disconnect();
     };
-  }, []);
+    // Anchors only exist once the projects have rendered.
+  }, [loaded, visible.length]);
 
   return (
     <div className="min-h-screen bg-ground">
