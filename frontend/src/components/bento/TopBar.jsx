@@ -6,7 +6,6 @@ import { PROFILE } from "../../config/profile";
 const SECTIONS = [
   { id: "work", label: "Work" },
   { id: "about", label: "About" },
-  { id: "open-source", label: "Open source" },
   { id: "contact", label: "Contact" },
 ];
 

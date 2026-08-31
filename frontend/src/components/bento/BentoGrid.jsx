@@ -32,11 +32,19 @@ import {
   preloadProjectThumbnails,
 } from "../../config/projectThumbnails";
 
-/** Anchors the nav pill tracks, in document order. */
-const SECTION_IDS = ["about", "work", "open-source", "contact"];
+/**
+ * Sections that have an anchor further down the page, in document order.
+ *
+ * "work" is not among them: it means the top of the page, and is what the
+ * indicator falls back to before anything below has scrolled past the header.
+ */
+const SECTION_IDS = ["about", "contact"];
 
 /** Clearance for the sticky header when scrolling to an anchor. */
 const HEADER_OFFSET = 86;
+
+/** A section becomes current once its top passes this line. */
+const ACTIVE_MARKER = HEADER_OFFSET + 40;
 
 /** How long a nav scroll owns the indicator before the spy takes over again. */
 const SCROLL_SETTLE_MS = 700;
@@ -111,6 +119,10 @@ const BentoGrid = () => {
    */
   const spyMutedUntil = useRef(0);
 
+  /** A hairline at the very end of the document, so "scrolled to the bottom"
+   *  is an observable event rather than something to poll for. */
+  const pageEndRef = useRef(null);
+
   /**
    * Scrolls by computed offset rather than `scrollIntoView`.
    *
@@ -122,7 +134,9 @@ const BentoGrid = () => {
   const scrollTo = useCallback((id) => {
     spyMutedUntil.current = Date.now() + SCROLL_SETTLE_MS;
 
-    if (id === "top") {
+    // Work is the top of the page — the intro and the featured project are
+    // the first thing there, so there is nothing to scroll past.
+    if (id === "top" || id === "work") {
       setActiveSection("work");
       smoothScrollTo(0);
       return;
@@ -141,15 +155,11 @@ const BentoGrid = () => {
   }, []);
 
   /**
-   * Tracks which anchor is in view.
+   * Tracks which section the reader is in.
    *
-   * An IntersectionObserver rather than a scroll listener: measuring four
-   * elements on every scroll event thrashes layout, and that was the jank in
-   * the nav indicator. The browser does the work off the main thread here and
-   * only calls back when a section actually crosses the line.
-   *
-   * `rootMargin` narrows the viewport to a band just under the sticky header,
-   * so "current" means the last section to have passed beneath it.
+   * An IntersectionObserver rather than a scroll listener: measuring anchors
+   * on every scroll event thrashes layout, and that was the jank in the nav
+   * indicator. This only wakes up when a section actually crosses the marker.
    */
   useEffect(() => {
     const entries = SECTION_IDS.map((id) => [
@@ -158,30 +168,48 @@ const BentoGrid = () => {
     ]).filter(([, node]) => node);
     if (!entries.length) return undefined;
 
-    const passed = new Set();
+    const endMarker = pageEndRef.current;
+    const tops = new Map();
+    let atPageEnd = false;
 
+    const resolve = () => {
+      if (Date.now() < spyMutedUntil.current) return;
+
+      // The last section whose top has crossed the marker wins; before any
+      // has, we are still at the top and Work is current.
+      let next = "work";
+      SECTION_IDS.forEach((id) => {
+        const top = tops.get(id);
+        if (top !== undefined && top <= ACTIVE_MARKER) next = id;
+      });
+
+      // The final section never reaches the top of a page that ends just
+      // below it, so hitting the bottom counts as arriving.
+      if (atPageEnd) next = SECTION_IDS[SECTION_IDS.length - 1];
+
+      setActiveSection((current) => (current === next ? current : next));
+    };
+
+    // Shifting the root's top edge to the marker makes the observer report
+    // exactly the crossings that change the answer, and nothing else.
     const observer = new IntersectionObserver(
       (records) => {
         records.forEach((record) => {
+          if (record.target === endMarker) {
+            atPageEnd = record.isIntersecting;
+            return;
+          }
           const id = entries.find(([, node]) => node === record.target)?.[0];
-          if (!id) return;
-          if (record.isIntersecting) passed.add(id);
-          else passed.delete(id);
+          if (id) tops.set(id, record.boundingClientRect.top);
         });
-
-        if (Date.now() < spyMutedUntil.current) return;
-
-        // Last section in document order that is currently in the band.
-        const next = [...SECTION_IDS].reverse().find((id) => passed.has(id));
-        setActiveSection((current) => {
-          const resolved = next || "work";
-          return current === resolved ? current : resolved;
-        });
+        resolve();
       },
-      { rootMargin: `-${HEADER_OFFSET}px 0px -55% 0px`, threshold: 0 },
+      { rootMargin: `-${ACTIVE_MARKER}px 0px 0px 0px`, threshold: 0 },
     );
 
     entries.forEach(([, node]) => observer.observe(node));
+    if (endMarker) observer.observe(endMarker);
+
     return () => {
       cancelScroll();
       observer.disconnect();
@@ -238,7 +266,7 @@ const BentoGrid = () => {
         <ToolsTile delay={0.04} />
 
         <SkillsTile delay={0.02} />
-        <OpenSourceTile delay={0.04} tileRef={setSectionRef("open-source")} />
+        <OpenSourceTile delay={0.04} />
         <AwardsTile delay={0.06} />
 
         <ContactTile delay={0.02} tileRef={setSectionRef("contact")} />
@@ -248,6 +276,8 @@ const BentoGrid = () => {
         © {new Date().getFullYear()} Monish Puttu · Built with React, Node and
         PostgreSQL
       </footer>
+
+      <div ref={pageEndRef} aria-hidden="true" className="h-px" />
 
       {/* ProjectModal runs its own AnimatePresence and no-ops without a project. */}
       <ProjectModal
