@@ -46,9 +46,6 @@ const HEADER_OFFSET = 86;
 /** A section becomes current once its top passes this line. */
 const ACTIVE_MARKER = HEADER_OFFSET + 40;
 
-/** How long a nav scroll owns the indicator before the spy takes over again. */
-const SCROLL_SETTLE_MS = 700;
-
 const BentoGrid = () => {
   const [projects, setProjects] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -117,7 +114,44 @@ const BentoGrid = () => {
    * are going, so the spy must not drag the pill through every section on the
    * way past. Suppressing it is what stops the indicator stuttering.
    */
-  const spyMutedUntil = useRef(0);
+  const spyMuted = useRef(false);
+
+  /**
+   * Which section the reader is in, measured now.
+   *
+   * Reading two rects on demand rather than trusting values cached from
+   * earlier observer callbacks: those go stale the moment anything reflows —
+   * a thumbnail finishing, a tile finishing its entrance — and a stale cache
+   * is what made the indicator wrong intermittently rather than always.
+   */
+  const currentSection = useCallback(() => {
+    let next = "work";
+
+    SECTION_IDS.forEach((id) => {
+      const node = sectionRefs.current[id];
+      if (node && node.getBoundingClientRect().top <= ACTIVE_MARKER) next = id;
+    });
+
+    // The final section cannot reach the marker on a page that ends just
+    // below it, so seeing enough of it counts as having arrived.
+    const lastId = SECTION_IDS[SECTION_IDS.length - 1];
+    const lastNode = sectionRefs.current[lastId];
+    if (lastNode) {
+      const rect = lastNode.getBoundingClientRect();
+      const onScreen =
+        Math.max(0, Math.min(rect.bottom, window.innerHeight)) -
+        Math.max(rect.top, 0);
+      if (rect.height && onScreen / rect.height >= 0.5) next = lastId;
+    }
+
+    return next;
+  }, []);
+
+  const syncSection = useCallback(() => {
+    if (spyMuted.current) return;
+    const next = currentSection();
+    setActiveSection((current) => (current === next ? current : next));
+  }, [currentSection]);
 
   /**
    * Scrolls by computed offset rather than `scrollIntoView`.
@@ -127,35 +161,49 @@ const BentoGrid = () => {
    * the target once and driving the window keeps it reliable, and lets the
    * sticky header be accounted for explicitly.
    */
-  const scrollTo = useCallback((id) => {
-    spyMutedUntil.current = Date.now() + SCROLL_SETTLE_MS;
+  const scrollTo = useCallback(
+    (id) => {
+      // The indicator belongs to the click until the page stops moving. Ending
+      // the mute on arrival rather than on a timer is what stops it flipping
+      // back: a timer can expire while the scroll is still running, or before
+      // a late reflow settles.
+      spyMuted.current = true;
+      const release = () => {
+        spyMuted.current = false;
+        syncSection();
+      };
 
-    // Work is the top of the page — the intro and the featured project are
-    // the first thing there, so there is nothing to scroll past.
-    if (id === "top" || id === "work") {
-      setActiveSection("work");
-      smoothScrollTo(0);
-      return;
-    }
+      // Work is the top of the page — the intro and the featured project are
+      // the first thing there, so there is nothing to scroll past.
+      if (id === "top" || id === "work") {
+        setActiveSection("work");
+        smoothScrollTo(0, release);
+        return;
+      }
 
-    const node = sectionRefs.current[id];
-    if (!node) return;
+      const node = sectionRefs.current[id];
+      if (!node) {
+        spyMuted.current = false;
+        return;
+      }
 
-    // Scroll before touching state. Setting it first re-renders the grid,
-    // which reattaches every anchor ref mid-flight and can interrupt the
-    // scroll that was just requested.
-    const top =
-      node.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-    smoothScrollTo(top);
-    setActiveSection(id);
-  }, []);
+      // Scroll before touching state. Setting it first re-renders the grid,
+      // which reattaches every anchor ref mid-flight and can interrupt the
+      // scroll that was just requested.
+      const top =
+        node.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+      smoothScrollTo(top, release);
+      setActiveSection(id);
+    },
+    [syncSection],
+  );
 
   /**
-   * Tracks which section the reader is in.
+   * Wakes `syncSection` when the page moves.
    *
-   * An IntersectionObserver rather than a scroll listener: measuring anchors
-   * on every scroll event thrashes layout, and that was the jank in the nav
-   * indicator. This only wakes up when a section actually crosses the marker.
+   * Observers rather than a scroll listener: measuring anchors on every scroll
+   * event thrashes layout, and that was the jank in the nav indicator. These
+   * fire only when something actually changes.
    */
   useEffect(() => {
     const entries = SECTION_IDS.map((id) => [
@@ -164,63 +212,28 @@ const BentoGrid = () => {
     ]).filter(([, node]) => node);
     if (!entries.length) return undefined;
 
-    const tops = new Map();
-    const [lastId, lastNode] = entries[entries.length - 1];
-    let lastArrived = false;
+    // The observers only say "something moved" — `syncSection` then measures.
+    // Thresholds are spread so a section entering, half-showing or filling the
+    // viewport all wake it, since each can change the answer.
+    const observer = new IntersectionObserver(syncSection, {
+      threshold: [0, 0.25, 0.5, 0.75, 1],
+    });
+    entries.forEach(([, node]) => observer.observe(node));
 
-    const resolve = () => {
-      if (Date.now() < spyMutedUntil.current) return;
+    // A tile growing as its thumbnail arrives moves everything below it, and
+    // that reflow does not necessarily cross an observer threshold.
+    const resize = new ResizeObserver(syncSection);
+    resize.observe(document.body);
 
-      // The last section whose top has crossed the marker wins; before any
-      // has, we are still at the top and Work is current.
-      let next = "work";
-      SECTION_IDS.forEach((id) => {
-        const top = tops.get(id);
-        if (top !== undefined && top <= ACTIVE_MARKER) next = id;
-      });
-
-      // The final section cannot reach the marker on a page that ends just
-      // below it, so seeing enough of it counts as having arrived. Without
-      // this the indicator falls back to the previous section the moment a
-      // click on the last one settles.
-      if (lastArrived) next = lastId;
-
-      setActiveSection((current) => (current === next ? current : next));
-    };
-
-    // Shifting the root's top edge to the marker makes the observer report
-    // exactly the crossings that change the answer, and nothing else.
-    const crossings = new IntersectionObserver(
-      (records) => {
-        records.forEach((record) => {
-          const id = entries.find(([, node]) => node === record.target)?.[0];
-          if (id) tops.set(id, record.boundingClientRect.top);
-        });
-        resolve();
-      },
-      { rootMargin: `-${ACTIVE_MARKER}px 0px 0px 0px`, threshold: 0 },
-    );
-    entries.forEach(([, node]) => crossings.observe(node));
-
-    // Watching the section itself, rather than a hairline at the end of the
-    // document: that sat exactly on the viewport edge at full scroll and
-    // reported its own intersection inconsistently.
-    const arrival = new IntersectionObserver(
-      ([record]) => {
-        lastArrived = record.intersectionRatio >= 0.5;
-        resolve();
-      },
-      { threshold: [0, 0.5, 1] },
-    );
-    arrival.observe(lastNode);
+    syncSection();
 
     return () => {
       cancelScroll();
-      crossings.disconnect();
-      arrival.disconnect();
+      observer.disconnect();
+      resize.disconnect();
     };
     // Anchors only exist once the projects have rendered.
-  }, [loaded, visible.length]);
+  }, [loaded, visible.length, syncSection]);
 
   return (
     <div className="min-h-screen bg-ground">
@@ -281,7 +294,6 @@ const BentoGrid = () => {
         © {new Date().getFullYear()} Monish Puttu · Built with React, Node and
         PostgreSQL
       </footer>
-
 
       {/* ProjectModal runs its own AnimatePresence and no-ops without a project. */}
       <ProjectModal
