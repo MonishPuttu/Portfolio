@@ -23,6 +23,7 @@ import ContactTile from "./ContactTile";
 import ProjectModal from "../ProjectModal";
 import useTheme from "./useTheme";
 import { cancelScroll, smoothScrollTo } from "./smoothScroll";
+import { measureAnchors, sectionAt } from "./sectionSpy";
 
 import API_URL from "../../config/api";
 import { isListed, sortProjects } from "../../config/projectTags";
@@ -42,9 +43,6 @@ const SECTION_IDS = ["about", "contact"];
 
 /** Clearance for the sticky header when scrolling to an anchor. */
 const HEADER_OFFSET = 86;
-
-/** A section becomes current once its top passes this line. */
-const ACTIVE_MARKER = HEADER_OFFSET + 40;
 
 const BentoGrid = () => {
   const [projects, setProjects] = useState([]);
@@ -116,42 +114,18 @@ const BentoGrid = () => {
    */
   const spyMuted = useRef(false);
 
-  /**
-   * Which section the reader is in, measured now.
-   *
-   * Reading two rects on demand rather than trusting values cached from
-   * earlier observer callbacks: those go stale the moment anything reflows —
-   * a thumbnail finishing, a tile finishing its entrance — and a stale cache
-   * is what made the indicator wrong intermittently rather than always.
-   */
-  const currentSection = useCallback(() => {
-    let next = "work";
+  /** Anchor geometry, refreshed only when the layout can actually change. */
+  const metrics = useRef(null);
 
-    SECTION_IDS.forEach((id) => {
-      const node = sectionRefs.current[id];
-      if (node && node.getBoundingClientRect().top <= ACTIVE_MARKER) next = id;
-    });
-
-    // The final section cannot reach the marker on a page that ends just
-    // below it, so seeing enough of it counts as having arrived.
-    const lastId = SECTION_IDS[SECTION_IDS.length - 1];
-    const lastNode = sectionRefs.current[lastId];
-    if (lastNode) {
-      const rect = lastNode.getBoundingClientRect();
-      const onScreen =
-        Math.max(0, Math.min(rect.bottom, window.innerHeight)) -
-        Math.max(rect.top, 0);
-      if (rect.height && onScreen / rect.height >= 0.5) next = lastId;
-    }
-
-    return next;
+  const remeasure = useCallback(() => {
+    metrics.current = measureAnchors(sectionRefs.current, SECTION_IDS);
   }, []);
 
   const syncSection = useCallback(() => {
-    if (spyMuted.current) return;
-    const next = currentSection();
+    if (spyMuted.current || !metrics.current) return;
+    const next = sectionAt(window.scrollY, metrics.current);
     setActiveSection((current) => (current === next ? current : next));
-  }, [currentSection]);
+  }, []);
 
   /**
    * Scrolls by computed offset rather than `scrollIntoView`.
@@ -199,41 +173,44 @@ const BentoGrid = () => {
   );
 
   /**
-   * Wakes `syncSection` when the page moves.
+   * Keeps the indicator honest.
    *
-   * Observers rather than a scroll listener: measuring anchors on every scroll
-   * event thrashes layout, and that was the jank in the nav indicator. These
-   * fire only when something actually changes.
+   * A plain scroll listener, not an IntersectionObserver. Observer thresholds
+   * are about how much of an element is visible, while the rule is about where
+   * its top sits — so the observer stayed silent through changes that flip the
+   * answer. Scrolling up from the bottom took About from fully visible to 82%,
+   * crossing no threshold, and the indicator stuck on About all the way to the
+   * top.
+   *
+   * The cost this was avoiding is gone anyway: geometry is measured once here
+   * and on layout changes, so the scroll handler is arithmetic with no layout
+   * reads, and it only touches state when the answer actually differs.
    */
   useEffect(() => {
-    const entries = SECTION_IDS.map((id) => [
-      id,
-      sectionRefs.current[id],
-    ]).filter(([, node]) => node);
-    if (!entries.length) return undefined;
-
-    // The observers only say "something moved" — `syncSection` then measures.
-    // Thresholds are spread so a section entering, half-showing or filling the
-    // viewport all wake it, since each can change the answer.
-    const observer = new IntersectionObserver(syncSection, {
-      threshold: [0, 0.25, 0.5, 0.75, 1],
-    });
-    entries.forEach(([, node]) => observer.observe(node));
-
-    // A tile growing as its thumbnail arrives moves everything below it, and
-    // that reflow does not necessarily cross an observer threshold.
-    const resize = new ResizeObserver(syncSection);
-    resize.observe(document.body);
-
+    remeasure();
     syncSection();
+
+    const onScroll = () => syncSection();
+    const onResize = () => {
+      remeasure();
+      syncSection();
+    };
+
+    // A tile growing as its thumbnail arrives moves every anchor below it.
+    const content = new ResizeObserver(onResize);
+    content.observe(document.body);
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
 
     return () => {
       cancelScroll();
-      observer.disconnect();
-      resize.disconnect();
+      content.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
     };
     // Anchors only exist once the projects have rendered.
-  }, [loaded, visible.length, syncSection]);
+  }, [loaded, visible.length, remeasure, syncSection]);
 
   return (
     <div className="min-h-screen bg-ground">
