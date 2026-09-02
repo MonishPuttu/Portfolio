@@ -27,7 +27,7 @@ const normalizeApiUrl = (value) => {
     return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
   }
 
-  // Development supports malformed local values like ":5001/api" and host:port.
+  // Development supports malformed local values like ":5000/api" and host:port.
   const withProtocol = normalizedInput.startsWith(":")
     ? `http://localhost${normalizedInput}`
     : hasProtocol(normalizedInput)

@@ -16,6 +16,20 @@ export const apiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+/**
+ * The public analytics writes take no auth, so the shared apiLimiter was the
+ * only thing between an open POST endpoint and unbounded rows in the database.
+ * A tighter per-IP bucket keeps honest page views (a handful per visit) well
+ * inside the limit while making bulk insertion pointless.
+ */
+export const analyticsLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 40,
+  message: "Too many analytics events, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // 5 login attempts per window

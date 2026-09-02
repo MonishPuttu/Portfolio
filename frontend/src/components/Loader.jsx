@@ -8,90 +8,27 @@ const Loader = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const MIN_LOADER_MS = 4200;
-    const VIDEO_WAIT_TIMEOUT_MS = 6000;
-    const HOLD_POINTS = [56, 64, 72];
-    const holdPoint =
-      HOLD_POINTS[Math.floor(Math.random() * HOLD_POINTS.length)];
-    let completed = false;
-    const startedAt = Date.now();
+    // Nothing on this page loads asynchronously behind the loader: the bento
+    // grid renders no video until a project modal opens, and the thumbnails
+    // are lazy. So this is a short branded wipe, not a wait — it used to gate
+    // the page for 1.1s plus a 0.42s fade on machinery that was watching for
+    // videos that never existed.
+    const HOLD_MS = 620;
+    const FADE_MS = 260;
 
-    const isVideoReady = () => {
-      const videos = Array.from(document.querySelectorAll("video[src]"));
-      if (videos.length === 0) return false;
+    const step = setInterval(() => {
+      setProgress((p) => Math.min(99, p + Math.max(1.5, (99 - p) * 0.18)));
+    }, 40);
 
-      const readyVideos = videos.filter(
-        (video) => video.readyState >= 2,
-      ).length;
-      const targetReady = Math.min(2, videos.length);
-      return readyVideos >= targetReady;
-    };
-
-    const interval = setInterval(() => {
-      setProgress((p) => {
-        if (completed) return p;
-
-        const elapsed = Date.now() - startedAt;
-        const timeRatio = Math.min(1, elapsed / MIN_LOADER_MS);
-        const ready = isVideoReady();
-
-        const videos = Array.from(document.querySelectorAll("video[src]"));
-        const readyVideos = videos.filter(
-          (video) => video.readyState >= 2,
-        ).length;
-        const readinessRatio =
-          videos.length > 0 ? readyVideos / videos.length : 0;
-
-        const timeCurve = 8 + 68 * (1 - Math.exp(-2.6 * timeRatio));
-        const readinessBoost = 18 * (1 - Math.exp(-3.5 * readinessRatio));
-
-        // Until videos are ready, hold around a randomized plateau so each reload feels different.
-        const target = ready
-          ? Math.min(98.6, timeCurve + readinessBoost)
-          : Math.min(holdPoint + 2.4, Math.min(timeCurve, holdPoint));
-
-        const delta = Math.max(0, target - p);
-        return Math.min(98.6, p + delta * 0.11 + 0.05);
-      });
-    }, 120);
-
-    const waitForVideoReadiness = () =>
-      new Promise((resolve) => {
-        const start = Date.now();
-        const check = () => {
-          const elapsed = Date.now() - start;
-
-          if (isVideoReady()) {
-            resolve();
-            return;
-          }
-
-          if (elapsed >= VIDEO_WAIT_TIMEOUT_MS) {
-            resolve();
-            return;
-          }
-
-          setTimeout(check, 200);
-        };
-
-        check();
-      });
-
-    const runLoader = async () => {
-      await Promise.all([
-        new Promise((resolve) => setTimeout(resolve, MIN_LOADER_MS)),
-        waitForVideoReadiness(),
-      ]);
-
-      completed = true;
+    const done = setTimeout(() => {
+      clearInterval(step);
       setProgress(100);
-      setTimeout(() => setLoading(false), 420);
-    };
-
-    runLoader();
+      setTimeout(() => setLoading(false), FADE_MS);
+    }, HOLD_MS);
 
     return () => {
-      clearInterval(interval);
+      clearInterval(step);
+      clearTimeout(done);
     };
   }, []);
 
@@ -101,8 +38,8 @@ const Loader = () => {
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white"
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-ground"
         >
           <motion.div
             initial={{ y: 10, opacity: 0 }}
@@ -118,7 +55,7 @@ const Loader = () => {
                 strokeWidth="138"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-primary-200"
+                className="text-track"
               />
 
               <motion.path
@@ -136,7 +73,7 @@ const Loader = () => {
             </svg>
           </motion.div>
 
-          <div className="w-56 h-[3px] bg-primary-100 rounded-full overflow-hidden">
+          <div className="w-56 h-[3px] bg-track rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-primary-600 rounded-full"
               style={{ width: `${Math.min(progress, 100)}%` }}
@@ -146,8 +83,8 @@ const Loader = () => {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="mt-4 text-xs font-semibold tracking-[0.18em] uppercase text-primary-700"
+            transition={{ delay: 0.15 }}
+            className="mt-4 text-xs font-semibold tracking-[0.18em] uppercase text-primary-600 dark:text-primary-300"
           >
             Loading {Math.floor(Math.min(progress, 100))}%
           </motion.p>

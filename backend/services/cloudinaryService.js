@@ -37,8 +37,11 @@ const cloudinaryRootFolder = (
   .trim();
 const shouldVerifyCloudinaryAsset =
   process.env.CLOUDINARY_VERIFY_ASSET_EXISTENCE !== "false";
+// Must name a file the frontend actually ships, or every project without
+// media costs a 404 per page load. /thumbnails/default.svg is the placeholder
+// the grid already falls back to.
 const fallbackThumbnailUrl =
-  process.env.CLOUDINARY_FALLBACK_THUMBNAIL || "/fallback-thumbnail.png";
+  process.env.CLOUDINARY_FALLBACK_THUMBNAIL || "/thumbnails/default.svg";
 
 if (
   cloudinaryFromUrl &&

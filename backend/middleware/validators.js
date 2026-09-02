@@ -60,20 +60,24 @@ export const validateIdParam = [
  * Validate contact form submission.
  */
 export const validateContact = [
+  // Stored raw on purpose. Escaping here would persist "O&#x27;Brien" for
+  // O'Brien, in the database and in the notification mail; escaping belongs at
+  // the point of output, which the email template already does.
   body("name")
     .trim()
     .notEmpty()
     .withMessage("Name is required")
     .isLength({ max: 255 })
-    .withMessage("Name must be under 255 characters")
-    .escape(),
+    .withMessage("Name must be under 255 characters"),
+  // No normalizeEmail(): it rewrites Gmail addresses (strips dots, cuts +tags),
+  // so the address on file would not be the one the sender typed — and that is
+  // the address a reply goes to.
   body("email")
     .trim()
     .notEmpty()
     .withMessage("Email is required")
     .isEmail()
     .withMessage("Invalid email address")
-    .normalizeEmail()
     .isLength({ max: 255 })
     .withMessage("Email must be under 255 characters"),
   body("message")
@@ -213,6 +217,51 @@ export const validatePageView = [
     .optional()
     .isLength({ max: 255 })
     .withMessage("visitor_id must be under 255 characters"),
+  body("session_id")
+    .optional()
+    .isLength({ max: 255 })
+    .withMessage("session_id must be under 255 characters"),
+  // Context the browser volunteers about itself. All optional, all bounded:
+  // these are rendered into a notification email, so an unbounded string
+  // here is somebody else's problem later.
+  body("referrer")
+    .optional()
+    .isLength({ max: 500 })
+    .withMessage("referrer must be under 500 characters"),
+  body("landing_url")
+    .optional()
+    .isLength({ max: 500 })
+    .withMessage("landing_url must be under 500 characters"),
+  body("timezone")
+    .optional()
+    .isLength({ max: 64 })
+    .withMessage("timezone must be under 64 characters"),
+  body("language")
+    .optional()
+    .isLength({ max: 64 })
+    .withMessage("language must be under 64 characters"),
+  body("screen")
+    .optional()
+    .isLength({ max: 32 })
+    .withMessage("screen must be under 32 characters"),
+  body("returning")
+    .optional()
+    .isBoolean()
+    .withMessage("returning must be a boolean"),
+  handleValidationErrors,
+];
+
+/**
+ * Validate the end-of-visit beacon. Only the session id matters; everything
+ * else about the visit was captured on the way in.
+ */
+export const validateVisitEnd = [
+  body("session_id")
+    .trim()
+    .notEmpty()
+    .withMessage("session_id is required")
+    .isLength({ max: 255 })
+    .withMessage("session_id must be under 255 characters"),
   handleValidationErrors,
 ];
 
@@ -230,6 +279,10 @@ export const validateEvent = [
     .optional()
     .isObject()
     .withMessage("event_data must be an object"),
+  body("session_id")
+    .optional()
+    .isLength({ max: 255 })
+    .withMessage("session_id must be under 255 characters"),
   handleValidationErrors,
 ];
 
