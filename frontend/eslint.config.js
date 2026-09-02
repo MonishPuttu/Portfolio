@@ -39,4 +39,11 @@ export default defineConfig([
       "react/no-unescaped-entities": "off",
     },
   },
+  {
+    // Build-time config runs in Node, not the browser.
+    files: ["vite.config.js", "tailwind.config.js", "postcss.config.cjs"],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ]);

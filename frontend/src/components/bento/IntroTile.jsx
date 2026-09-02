@@ -30,11 +30,14 @@ const IntroTile = ({ onSeeWork }) => {
         {PROFILE.headline.trail}
       </h1>
 
-      <p
-        className="mt-3.5 flex min-h-[18px] items-center gap-2 text-[12.5px] text-white/60"
-        aria-live="polite"
-      >
-        <span className="font-medium text-white">{role}</span>
+      {/* No aria-live: the role text retypes character by character, and a
+          polite region announced every single frame of it. Screen readers get
+          the settled list once, from the sr-only line below. */}
+      <p className="mt-3.5 flex min-h-[18px] items-center gap-2 text-[12.5px] text-white/60">
+        <span className="sr-only">{PROFILE.roles.join(", ")}</span>
+        <span aria-hidden="true" className="font-medium text-white">
+          {role}
+        </span>
         <span
           aria-hidden="true"
           className="inline-block h-3.5 w-[2px] animate-pulse bg-spark"

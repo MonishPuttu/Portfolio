@@ -27,11 +27,7 @@ import { measureAnchors, sectionAt } from "./sectionSpy";
 
 import API_URL from "../../config/api";
 import { isListed, sortProjects } from "../../config/projectTags";
-import {
-  hydrateProjectsWithThumbnails,
-  preloadKnownProjectThumbnails,
-  preloadProjectThumbnails,
-} from "../../config/projectThumbnails";
+import { hydrateProjectsWithThumbnails } from "../../config/projectThumbnails";
 
 /**
  * Sections that have an anchor further down the page, in document order.
@@ -63,8 +59,6 @@ const BentoGrid = () => {
   );
 
   useEffect(() => {
-    preloadKnownProjectThumbnails();
-
     let cancelled = false;
 
     const load = async () => {
@@ -73,8 +67,9 @@ const BentoGrid = () => {
         const raw = data.data || [];
         if (cancelled) return;
 
+        // No preloading here. Every tile already sets loading="lazy", and
+        // fetching all five screenshots up front simply cancelled that out.
         setProjects(hydrateProjectsWithThumbnails(raw));
-        await preloadProjectThumbnails(raw);
       } catch {
         if (!cancelled) toast.error("Couldn't load projects.");
       } finally {

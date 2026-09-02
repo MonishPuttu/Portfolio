@@ -35,6 +35,9 @@ export const sendContactEmail = async (contactData) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: process.env.ADMIN_EMAIL,
+    // `from` has to stay the authenticated SMTP account, so without replyTo
+    // hitting Reply on the notification just mails yourself.
+    replyTo: name ? `"${String(name).replace(/"/g, "'")}" <${email}>` : email,
     subject: `New Contact Form Submission from ${escapeHtml(name)}`,
     html: `
       <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
@@ -68,24 +71,55 @@ export const sendContactEmail = async (contactData) => {
   }
 };
 
-export const sendViewNotification = async (viewData) => {
+/**
+ * Notify the owner that someone visited.
+ *
+ * Sent once per visit, when the visit ends, so it can report how long they
+ * stayed and what they looked at — the two things that turn "someone viewed
+ * your portfolio" into something worth reading.
+ *
+ * Development is silent by default. A dev server reloading on every save
+ * would otherwise mail you a few dozen times an afternoon, and the mail you
+ * stop reading is the mail that does not work. Set VIEW_NOTIFICATIONS=on to
+ * force it anywhere, or =off to silence production.
+ */
+export const sendVisitNotification = async (visit) => {
+  const override = (process.env.VIEW_NOTIFICATIONS || "").toLowerCase();
+  const enabled =
+    override === "on"
+      ? true
+      : override === "off"
+        ? false
+        : process.env.NODE_ENV === "production";
+
+  if (!enabled) {
+    console.log(
+      `[analytics] visit notification suppressed (NODE_ENV=${
+        process.env.NODE_ENV || "development"
+      }): ${visit.summaryLine}`,
+    );
+    return { sent: false, reason: "disabled-in-this-environment" };
+  }
+
+  if (!process.env.ADMIN_EMAIL) {
+    console.warn("[analytics] ADMIN_EMAIL is not set; skipping notification.");
+    return { sent: false, reason: "no-admin-email" };
+  }
+
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: process.env.ADMIN_EMAIL,
-    subject: "New Portfolio View",
-    html: `
-      <div style="font-family: Arial, sans-serif; padding: 20px;">
-        <h3 style="color: #8B5CF6;">Someone viewed your portfolio!</h3>
-        <p><strong>Time:</strong> ${escapeHtml(new Date().toLocaleString())}</p>
-        <p><strong>Page:</strong> ${escapeHtml(viewData.page)}</p>
-        <p><strong>Location:</strong> ${escapeHtml(viewData.location || "Unknown")}</p>
-      </div>
-    `,
+    subject: visit.subject,
+    text: visit.text,
+    html: visit.html,
   };
 
   try {
     await transporter.sendMail(mailOptions);
+    return { sent: true };
   } catch (error) {
-    console.error("View notification error:", error);
+    // Never let a mail failure take down a tracking request.
+    console.error("Visit notification error:", error);
+    return { sent: false, reason: error.message };
   }
 };

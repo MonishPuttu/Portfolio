@@ -28,11 +28,23 @@ export function sectionAt(scrollY, metrics) {
   if (!anchors || !anchors.length) return "work";
 
   const y = Math.max(0, scrollY);
+  const marker = y + ACTIVE_MARKER;
   let current = "work";
 
-  // The last anchor whose top has passed the marker.
-  anchors.forEach(({ id, top }) => {
-    if (top - y <= ACTIVE_MARKER) current = id;
+  // A section owns the marker only while its own tile spans it.
+  //
+  // The rule used to be "the last anchor whose top has passed the marker",
+  // which is right only when the sections run top to bottom. They do not:
+  // About is the experience tile, which sits beside the featured project on
+  // desktop and above it on narrower screens — either way it comes *before*
+  // the work. A rule that never lets go left the pill reading "About" for the
+  // whole run of project tiles, tools, skills and awards.
+  //
+  // Containment lets go at the bottom of the tile, and everything between two
+  // anchored sections falls back to "work" — which is exactly what that stretch
+  // of the page is.
+  anchors.forEach(({ id, top, height }) => {
+    if (marker >= top && marker < top + Math.max(height, 1)) current = id;
   });
 
   const last = anchors[anchors.length - 1];

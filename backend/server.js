@@ -17,7 +17,7 @@ import authRoutes from "./routes/auth.js";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 const isProduction = process.env.NODE_ENV === "production";
 
 const validateProductionEnv = () => {
@@ -45,6 +45,23 @@ const validateProductionEnv = () => {
 };
 
 validateProductionEnv();
+
+/**
+ * Behind Render/Railway/Fly/Vercel the socket address is the platform's proxy,
+ * not the visitor. Without this every request keys the rate limiters on the
+ * same address — one 100-req bucket and one 3-submission bucket for the whole
+ * internet — and `contacts.ipAddress` records the proxy on every row.
+ *
+ * The value is the number of proxies in front of us. One is right for a single
+ * managed platform; override with TRUST_PROXY if you add a CDN in front of it.
+ * It stays off in development, where the socket address really is the client
+ * and express-rate-limit rejects a permissive setting as unsafe.
+ */
+const trustProxy = process.env.TRUST_PROXY ?? (isProduction ? "1" : "");
+if (trustProxy) {
+  const hops = Number(trustProxy);
+  app.set("trust proxy", Number.isFinite(hops) ? hops : trustProxy);
+}
 
 // Middleware
 app.use(

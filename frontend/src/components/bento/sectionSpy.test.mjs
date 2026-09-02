@@ -3,14 +3,20 @@
  *
  * Sweeps every scroll position, at three real viewports, asserting the whole
  * shape of the behaviour rather than sampling a few points: the top is Work,
- * the bottom is Contact, and the sequence never goes backwards or skips.
+ * the bottom is Contact, and About owns only the band its own tile occupies.
+ *
+ * Work deliberately appears twice in a downward pass. About is the experience
+ * tile, which sits beside the featured project on desktop and above it on
+ * narrower screens, so the projects run *follows* About in both layouts. The
+ * pill returning to Work there is the fix, not a regression â the old rule
+ * never let go of About and mislabelled that whole stretch of the page.
  *
  *   node src/components/bento/sectionSpy.test.mjs
  *
  * Geometry below was measured from the running page, not invented.
  */
 import assert from "node:assert/strict";
-import { sectionAt } from "./sectionSpy.js";
+import { ACTIVE_MARKER, sectionAt } from "./sectionSpy.js";
 
 const LAYOUTS = [
   {
@@ -66,17 +72,18 @@ for (const layout of LAYOUTS) {
     `${layout.name}: bottom should be Contact`,
   );
 
-  // 3. Scrolling down passes through each section once, in order, never
-  //    revisiting one it already left. This is what "stuck on About" and the
-  //    flicker between About and Contact would both violate.
+  // 3. Scrolling down visits Work, then About, then Work again for the run of
+  //    project tiles below the experience tile, then Contact. The old rule
+  //    produced work -> about -> contact, with About covering every project.
   assert.deepEqual(
     seen,
-    ["work", "about", "contact"],
+    ["work", "about", "work", "contact"],
     `${layout.name}: unexpected sequence ${seen.join(" -> ")}`,
   );
 
-  // 4. Scrolling back up is the exact mirror — the reported bug was the pill
-  //    sticking on About all the way to the top.
+  // 4. Scrolling back up is the exact mirror. The reported bug was the pill
+  //    sticking on About all the way to the top; the mirror is what rules that
+  //    out in both directions.
   const upward = [];
   for (let y = maxScroll; y >= 0; y -= 1) {
     const s = at(y);
@@ -84,7 +91,7 @@ for (const layout of LAYOUTS) {
   }
   assert.deepEqual(
     upward,
-    ["contact", "about", "work"],
+    [...seen].reverse(),
     `${layout.name}: upward sequence was ${upward.join(" -> ")}`,
   );
 
@@ -95,9 +102,24 @@ for (const layout of LAYOUTS) {
   }
   assert.equal(
     boundaries.length,
-    2,
-    `${layout.name}: expected 2 transitions, saw ${boundaries.length}`,
+    3,
+    `${layout.name}: expected 3 transitions, saw ${boundaries.length}`,
   );
+
+  // 5b. About is bounded by its own tile: it must never still be current once
+  //     the marker has cleared the bottom of the experience tile. This is the
+  //     regression that mislabelled the projects, stated directly.
+  const about = layout.anchors.find((a) => a.id === "about");
+  for (let y = 0; y <= maxScroll; y += 1) {
+    const marker = y + ACTIVE_MARKER;
+    if (marker >= about.top && marker < about.top + about.height) continue;
+    assert.notEqual(
+      at(y),
+      "about",
+      `${layout.name}: About still current at y=${y}, outside its own tile`,
+    );
+    checks++;
+  }
 
   // 6. Clicking a nav item must land somewhere the rule agrees is that
   //    section — otherwise the indicator corrects itself the moment the
@@ -130,7 +152,10 @@ for (const layout of LAYOUTS) {
   });
 
   console.log(
-    `${layout.name.padEnd(18)} 0-${maxScroll}px  work→about @${boundaries[0]}  about→contact @${boundaries[1]}`,
+    `${layout.name.padEnd(18)} 0-${maxScroll}px  ` +
+      `work→about @${boundaries[0]}  ` +
+      `about→work @${boundaries[1]}  ` +
+      `work→contact @${boundaries[2]}`,
   );
 }
 

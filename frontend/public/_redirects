@@ -1,0 +1,5 @@
+# Single-page app: every path is served by index.html so /about, /projects and
+# /achievements survive a direct load or a refresh instead of hitting the
+# host's own 404. Vercel uses vercel.json; this file covers Netlify and
+# Cloudflare Pages, and is inert everywhere else.
+/*  /index.html  200

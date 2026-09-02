@@ -17,16 +17,23 @@ const FeaturedProjectTile = ({ project, onOpen, delay = 0, tileRef }) => {
 
   return (
     <Tile
-      as="button"
-      type="button"
       span="col-span-12 lg:col-span-8 lg:row-span-2"
       tileRef={tileRef}
       interactive
       delay={delay}
-      onClick={() => onOpen(project)}
-      className="min-h-[296px] !p-0"
-      aria-label={`Open ${title}`}
+      className="group min-h-[296px] !p-0"
     >
+      {/* A stretched button rather than a <button> wrapping the whole card:
+          headings and paragraphs are not valid inside a button, and making the
+          card itself one flattened the h3 out of the document outline. This
+          keeps the markup honest and the whole tile clickable. */}
+      <button
+        type="button"
+        onClick={() => onOpen(project)}
+        aria-label={`Open ${title}`}
+        className="absolute inset-0 z-20 h-full w-full cursor-pointer"
+      />
+
       <div
         className="relative flex min-h-[170px] flex-1 items-end p-[22px]"
         style={{ background: projectGradient(project) }}

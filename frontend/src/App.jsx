@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 
 import Loader from "./components/Loader";
 import BentoGrid from "./components/bento/BentoGrid";
-import { trackPageView } from "./utils/analytics";
+import { startVisitTracking, trackPageView } from "./utils/analytics";
 
 /**
  * The bento layout is a single surface — every former section is now a tile
@@ -18,11 +18,23 @@ function App() {
     trackPageView(window.location.pathname);
     const handlePop = () => trackPageView(window.location.pathname);
     window.addEventListener("popstate", handlePop);
-    return () => window.removeEventListener("popstate", handlePop);
+
+    // Tells the server when the visit ends, which is what lets it report how
+    // long someone stayed rather than only that they arrived.
+    const stopVisitTracking = startVisitTracking();
+
+    return () => {
+      window.removeEventListener("popstate", handlePop);
+      stopVisitTracking();
+    };
   }, []);
 
   return (
-    <Router>
+    <Router
+      // Opt in to the v7 behaviours now, so the console is clean and the
+      // eventual upgrade is a version bump rather than a behaviour change.
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <div className="min-h-screen bg-ground text-ink">
         <Loader />
         <Toaster position="top-center" />

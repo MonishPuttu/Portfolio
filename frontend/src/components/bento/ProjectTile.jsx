@@ -18,15 +18,20 @@ const ProjectTile = ({ project, onOpen, delay = 0 }) => {
 
   return (
     <Tile
-      as="button"
-      type="button"
       span="col-span-12 md:col-span-6 lg:col-span-4"
       interactive
       delay={delay}
-      onClick={() => onOpen(project)}
       className="group min-h-[184px] justify-between"
-      aria-label={`Open ${title}`}
     >
+      {/* Stretched button, not a button wrapping the card — see
+          FeaturedProjectTile: a heading is not valid content inside a button. */}
+      <button
+        type="button"
+        onClick={() => onOpen(project)}
+        aria-label={`Open ${title}`}
+        className="absolute inset-0 z-20 h-full w-full cursor-pointer"
+      />
+
       <span
         aria-hidden="true"
         className="absolute right-4 top-4 z-10 grid h-[26px] w-[26px] translate-y-[-4px] place-items-center rounded-full bg-surface/90 text-ink-soft opacity-0 shadow-sm backdrop-blur-sm transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"

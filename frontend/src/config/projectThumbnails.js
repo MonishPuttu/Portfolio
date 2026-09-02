@@ -1,32 +1,19 @@
+/**
+ * WebP, capped at 1600px wide. As PNGs these five came to 2.6 MB for artwork
+ * that renders at most 92px tall in a project tile, and they were fetched
+ * eagerly on mount, which defeated the loading="lazy" on the tiles themselves.
+ */
 const FEATURED_THUMBNAIL_MAP = {
-  anitalk: "/thumbnails/anitalk.png",
-  renz: "/thumbnails/renz.png",
-  drawify: "/thumbnails/drawify.png",
-  internhub: "/thumbnails/internhub.png",
-  trafficflow: "/thumbnails/trafficflow.png",
+  anitalk: "/thumbnails/anitalk.webp",
+  renz: "/thumbnails/renz.webp",
+  drawify: "/thumbnails/drawify.webp",
+  internhub: "/thumbnails/internhub.webp",
+  trafficflow: "/thumbnails/trafficflow.webp",
 };
 
 export const DEFAULT_PROJECT_THUMBNAIL = "/thumbnails/default.svg";
 
 const normalize = (value = "") => String(value).toLowerCase();
-
-const preloadImage = (src) =>
-  new Promise((resolve) => {
-    if (!src) {
-      resolve(false);
-      return;
-    }
-
-    const img = new Image();
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(false);
-    img.src = src;
-  });
-
-export const getKnownProjectThumbnails = () => [
-  ...Object.values(FEATURED_THUMBNAIL_MAP),
-  DEFAULT_PROJECT_THUMBNAIL,
-];
 
 export const resolveLocalProjectThumbnail = (project) => {
   if (!project) return null;
@@ -54,28 +41,6 @@ export const hydrateProjectsWithThumbnails = (projects = []) => {
       thumbnailUrl: preferredThumbnail,
     };
   });
-};
-
-export const preloadProjectThumbnails = async (projects = []) => {
-  const hydratedProjects = hydrateProjectsWithThumbnails(projects);
-
-  const uniqueThumbnailUrls = [
-    ...new Set(
-      hydratedProjects
-        .map((project) => project.thumbnail_url || project.thumbnailUrl)
-        .filter(Boolean),
-    ),
-  ];
-
-  await Promise.all(uniqueThumbnailUrls.map((url) => preloadImage(url)));
-
-  return hydratedProjects;
-};
-
-export const preloadKnownProjectThumbnails = async () => {
-  await Promise.all(
-    getKnownProjectThumbnails().map((url) => preloadImage(url)),
-  );
 };
 
 export default FEATURED_THUMBNAIL_MAP;
